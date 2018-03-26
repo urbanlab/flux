@@ -1,5 +1,18 @@
 <html>
+<script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+<script src="/socket.io/socket.io.js"></script>
 <body>
    <h1>Flux Mobile</h1>
+   Start: <input id="start">
 </body>
 </html>
+<script>
+  const socket = io('http://localhost:3000/mobile');
+  $("#start").on('change',function(v) {
+     console.log("start ",v);
+     socket.emit('start',$(this).val());
+  });
+</script>
