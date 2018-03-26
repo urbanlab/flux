@@ -29,11 +29,16 @@ visu.on('connection', function(socket){
   socket.emit('taux', taux);
 });
 
+function updateVisu() {
+   visu.emit('taux',taux);
+}
+
 var mobile = io.of('/mobile');
 mobile.on('connection', function(socket) {
     socket.on('start', function(v) {
         console.log('new start ',v);
-        visu.emit('taux', v);
+        taux = v;
+        updateVisu();
     });
 });
 
