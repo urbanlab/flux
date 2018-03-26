@@ -5,7 +5,7 @@ const path = require('path');
 
 module.exports = {
 
-//Sort all user
+//Sort all user by time and ask
 sort_users: function () {
 	prob_array = get_prob_array('./prob_file.json');
 	
@@ -14,12 +14,14 @@ sort_users: function () {
 }
 };
 
+//Get probabilities from a file
 function get_prob_array(path_to_file) {
 	file = fs.readFileSync(path_to_file, {encoding: 'utf-8'});
 	ret = JSON.parse(file);
 	return (ret);
 };
 
+//Get an index from an hour
 function hour_to_index(hour) {
 	trunc_hour = parseInt(hour);
 	minutes = hour - trunc_hour;
