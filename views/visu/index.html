@@ -9,12 +9,12 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="/assets-visu/utils.js"></script>
   <script>
-	const socket = io.connect('http://localhost:3000/visu');
+	const socket = io.connect('/visu');
 	var histogram = [];
 
 	socket.on('histogram', function (data) {
 		histogram = data;
-		console.log('data: ' + data);
+		console.log('data: ',data);
 	});
   </script>
 </head>
