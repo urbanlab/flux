@@ -29,7 +29,8 @@
   var b5 = 0; //bleu
 
 var slider;
-var button
+var cars;
+//var button;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -38,11 +39,15 @@ function setup() {
     console.log('yo');
     background(30);
 
+    cars = createSlider(0,100,100);
+    cars.position(100, 800);
+    cars.style('width', '300px');
+
     slider = createSlider(0, 24, 24);
     slider.position(100, 1000);
     slider.style('width', '1750px');
 
-
+    /*
     ten = createButton('10%');
     ten.position(100, 100);
     ten.mousePressed(change10)
@@ -57,8 +62,9 @@ function setup() {
     thirty.position(100, 500);
     thirty.mousePressed(change30)
     thirty.size(100, 100);
+    */
 }
-
+/*
 function change10(){
   r = 255;
   g = 0;
@@ -136,9 +142,43 @@ function change30(){
   g5 = 255;
   b5 = 0;
 }
-
+*/
 
 function draw() {
+  var clr = cars.value();
+
+  if(clr <= 25){
+    r = 0;
+    g = 255;
+    b = 0;
+
+    r1 = 0;
+    g1 = 255;
+    b1 = 0;
+
+  }else if (clr >= 25 && clr <= 75) {
+    r = 255;
+    g = 255;
+    b = 0;
+
+    r1 = 0;
+    g1 = 255;
+    b1 = 0;
+
+  }else if (clr >= 75) {
+    r = 255;
+    g = 0;
+    b = 0;
+
+    r1 = 255;
+    g1 = 255;
+    b1 = 0;
+  }
+
+  fill(r, g, b);
+  rect(100, 100, 100, 100);
+
+
  //image(img, 0, 0, windowWidth, windowHeight);
 //au dessus virage
   image(tree, 680, 180);
@@ -199,22 +239,22 @@ function draw() {
       line(500, 0, 500, 2000);
 
     //virage
-      noFill();
-      stroke(r1, g1, b1);
-      strokeWeight(30);
-      strokeCap(SQUARE);
+      //noFill();
+      //stroke(r, g, b);
+      //strokeWeight(30);
+      //strokeCap(SQUARE);
       //smooth();
-      arc(1100, 605, 1001, 880, PI, PI + HALF_PI);
+      //arc(1100, 605, 1001, 880, PI, PI + HALF_PI);
 
       noFill();
-      stroke(100, 100, 100);
+      stroke(r, g, b);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 4.7);
 
       noFill();
-      stroke(120, 120, 120);
+      stroke(r1, g1, b1);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
@@ -481,6 +521,7 @@ function draw() {
       stroke(255);
       strokeWeight(10);
       rect(0, 950, 2000, 150);
+
 
 
 
