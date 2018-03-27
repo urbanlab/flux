@@ -16,6 +16,8 @@ var histogram = [4, 4, 4, 4, 5, 6, 6, 7, 8, 8, 9, 9, 9, 10, 5, 6, 6, 7, 2, 1, 3]
 
 //Root listener
 app.use('/assets-visu', express.static('views/visu'));
+app.use('/mobile/libs', express.static('views/mobile/libs'));
+app.use('/mobile/assets', express.static('views/mobile/assets'));
 
 app.get('/', function(req, res) {
     res.send("Hello World!");

@@ -1,0 +1,23 @@
+﻿bleu #00c6c1
+
+gris #3f3f3f
+
+gris clair #eaeaea
+
+gris très clair (en fond) #fcfcfc
+
+
+
+
+typo :
+
+texte de labeur
+ : Montserrat 48px 
+(existe en bold pour les sous titres)
+
+
+texte un peu plus gros
+ : Montserrat 60px
+
+
+chiffres en gros : 98px
