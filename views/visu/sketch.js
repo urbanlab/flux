@@ -28,7 +28,7 @@
   var g5 = 0; //vert
   var b5 = 0; //bleu
 
-//var slider;
+var slider;
 var button
 
 function setup() {
@@ -37,12 +37,12 @@ function setup() {
   tree = loadImage("/assets-visu/assets/arbre.png");
     console.log('yo');
     background(30);
-/*
-    slider = createSlider(0, 2, 2);
-    slider.position(100, 100);
-    slider.style('width', '100px');
-    console.log(slider.value)
-    */
+
+    slider = createSlider(6, 24, 12);
+    slider.position(100, 1000);
+    slider.style('width', '1750px');
+
+
     ten = createButton('10%');
     ten.position(100, 100);
     ten.mousePressed(change10)
@@ -416,6 +416,12 @@ if(slider.value = 1) {
       //stroke(255, 0 , 0);
       //strokeWeight(10);
       rect(1250, 680, 150, 100);
+
+    //cache
+      fill(30);
+      stroke(255);
+      strokeWeight(10);
+      rect(0, 950, 2000, 150);
 
 
 
