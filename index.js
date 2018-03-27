@@ -12,7 +12,14 @@ var taux = 20;
 var lastClient = 0;
 var clients = {};
 
+
+
 //Root listener
+
+app.use('/assets-visu', express.static('views/visu'));
+
+
+
 app.get('/', function(req, res) {
     res.send("Hello World!");
 });
