@@ -33,7 +33,7 @@ var button
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  img = loadImage("/assets-visu/assets/bg.png");
+  img  = loadImage("/assets-visu/assets/bg.png");
   tree = loadImage("/assets-visu/assets/arbre.png");
     console.log('yo');
     background(30);
@@ -59,7 +59,7 @@ function setup() {
     thirty.size(100, 100);
 }
 
-function change10(){
+function change10() {
   r = 255;
   g = 0;
   b = 0;
@@ -85,7 +85,7 @@ function change10(){
   b5 = 0;
 }
 
-function change20(){
+function change20() {
   r = 255;
   g = 0;
   b = 0;
@@ -111,7 +111,7 @@ function change20(){
   b5 = 0;
 }
 
-function change30(){
+function change30() {
   r = 255;
   g = 69;
   b = 0;
@@ -139,7 +139,7 @@ function change30(){
 
 
 function draw() {
- //image(img, 0, 0, windowWidth, windowHeight);
+//image(img, 0, 0, windowWidth, windowHeight);
 //au dessus virage
   image(tree, 680, 180);
   image(tree, 780, 70);
