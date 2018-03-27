@@ -1,18 +1,68 @@
-<html>
-<script
-        src="https://code.jquery.com/jquery-3.3.1.min.js"
-        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-<script src="/socket.io/socket.io.js"></script>
+<!DOCTYPE html>
+
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+  <link href="assets/css/index.css" type="text/css" rel="stylesheet">
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+	const socket = io.connect('http://localhost:3000/mobile');
+
+	$(document).ready(function () {
+		socket.on('profile', function (data) {
+			console.log('data', data);
+			$("#name").html(data.name);
+			$("#from").html(data.from);
+			$("#time-user").html(data.time);
+		});
+	});
+	socket.emit('client', 'lyon7');
+   </script>
+
+</head>
+
 <body>
-   <h1>Flux Mobile</h1>
-   Start: <input id="start">
+
+    <div class="container">
+       <div id="menu" class="element">
+       <div class="burger"> 
+          <img src="assets/images/menu.png"> 
+       </div>
+       <div class="profil">
+          <h6> <span id="name"></h6>
+       </div>
+       <div class="logo">
+           <img src="assets/images/logo.png"> 
+       </div>
+    </div>
+    <div id="titre" class="element"> 
+    	<h1> Votre trajet du jour </h1> 
+    </div>
+    <div id="soustitre"> 
+    	<h4>Ce matin </h4> 
+    </div>
+    <div id="depart" class="element"> 
+    	<h2> Vous voulez arriver à :</h2>
+    </div>
+    <input id="time" type="time">
+    <div id="flexibilite" class="element"> 
+    	<h3> Vous pouvez arriver entre :</h3> 
+    </div>
+    <div id="flexible">
+      <input id="timebis" type="time">
+      <input id="timebis" type="time">
+    </div>
+    <div id="soustitre"> <h4> Ce soir </h4> </div>
+    <div id="depart" class="element"> <h2> Vous voulez arriver à :</h2> </div>
+    <input id="time" type="time">
+    <div id="flexibilite" class="element"> <h3> Vous pouvez arriver entre :</h3> </div>
+    <div id="flexible">
+      <input id="timebis" type="time">
+      <input id="timebis" type="time">
+    </div>
+  </div>
+
 </body>
+
 </html>
-<script>
-  const socket = io('http://localhost:3000/mobile');
-  $("#start").on('change',function(v) {
-     console.log("start ",v);
-     socket.emit('start',$(this).val());
-  });
-</script>

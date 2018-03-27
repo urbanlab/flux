@@ -145,11 +145,13 @@ function repart_mean(sub_vect, s, e, Num) {
 	console.log(repart);
 }
 
+const nbr_people = 1500;
+
 module.exports = {
 
 //Sort all user by time and ask
 sort_users: function () {
-	prob_array = get_prob_array('./prob_file.json');
+	prob_array = get_prob_array('./ressources/prob_file.json');
 	Num = 600;
 	start = 1;
 	end = 3;
