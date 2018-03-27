@@ -28,8 +28,9 @@
   var g5 = 0; //vert
   var b5 = 0; //bleu
 
-//var slider;
-var button
+var slider;
+var cars;
+//var button;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -37,12 +38,16 @@ function setup() {
   tree = loadImage("/assets-visu/assets/arbre.png");
     console.log('yo');
     background(30);
-/*
-    slider = createSlider(0, 2, 2);
-    slider.position(100, 100);
-    slider.style('width', '100px');
-    console.log(slider.value)
-    */
+
+    cars = createSlider(0,100,100);
+    cars.position(100, 800);
+    cars.style('width', '300px');
+
+    slider = createSlider(0, 24, 24);
+    slider.position(100, 1000);
+    slider.style('width', '1750px');
+
+    /*
     ten = createButton('10%');
     ten.position(100, 100);
     ten.mousePressed(change10)
@@ -57,8 +62,9 @@ function setup() {
     thirty.position(100, 500);
     thirty.mousePressed(change30)
     thirty.size(100, 100);
+    */
 }
-
+/*
 function change10(){
   r = 255;
   g = 0;
@@ -136,9 +142,43 @@ function change30(){
   g5 = 255;
   b5 = 0;
 }
-
+*/
 
 function draw() {
+  var clr = cars.value();
+
+  if(clr <= 25){
+    r = 0;
+    g = 255;
+    b = 0;
+
+    r1 = 0;
+    g1 = 255;
+    b1 = 0;
+
+  }else if (clr >= 25 && clr <= 75) {
+    r = 255;
+    g = 255;
+    b = 0;
+
+    r1 = 0;
+    g1 = 255;
+    b1 = 0;
+
+  }else if (clr >= 75) {
+    r = 255;
+    g = 0;
+    b = 0;
+
+    r1 = 255;
+    g1 = 255;
+    b1 = 0;
+  }
+
+  fill(r, g, b);
+  rect(100, 100, 100, 100);
+
+
  //image(img, 0, 0, windowWidth, windowHeight);
 //au dessus virage
   image(tree, 680, 180);
@@ -158,16 +198,6 @@ function draw() {
   image(tree, 1650, 560);
 
 
-
-
-//SLIDERS
-/*
-if(slider.value = 1) {
-  r = 0;
-} else {
-  r = 255;
-}
-*/
  //CARTE
 
   //Autoroute
@@ -181,9 +211,22 @@ if(slider.value = 1) {
       strokeWeight(30);
       line(600, 0, 600, 2000);
       //avant virage
-      stroke(r, g, b);
+      stroke(r, g, b, 25);
       strokeWeight(30);
-      line(600, 580, 600, 2000);
+      line(600, 900, 600, 1000);
+
+      stroke(r, g, b, 50);
+      strokeWeight(30);
+      line(600, 800, 600, 900);
+
+      stroke(r, g, b, 75);
+      strokeWeight(30);
+      line(600, 700, 600, 800);
+
+      stroke(r, g, b, 100);
+      strokeWeight(30);
+      line(600, 580, 600, 700);
+
 
     //gauche
       //fond
@@ -196,12 +239,68 @@ if(slider.value = 1) {
       line(500, 0, 500, 2000);
 
     //virage
+      //noFill();
+      //stroke(r, g, b);
+      //strokeWeight(30);
+      //strokeCap(SQUARE);
+      //smooth();
+      //arc(1100, 605, 1001, 880, PI, PI + HALF_PI);
+
+      noFill();
+      stroke(r, g, b);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 4.7);
+
       noFill();
       stroke(r1, g1, b1);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
-      arc(1100, 605, 1001, 880, PI, PI + HALF_PI);
+      arc(1100, 605, 1001, 880, PI, 4.5);
+
+      noFill();
+      stroke(140, 140, 140);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 4.3);
+
+      noFill();
+      stroke(160, 160, 160);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 4.1);
+
+      noFill();
+      stroke(180, 180, 180);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 3.9);
+
+      noFill();
+      stroke(200, 200, 200);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 3.7);
+
+      noFill();
+      stroke(220, 220, 220);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 3.5);
+
+      noFill();
+      stroke(255, 255, 255);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 3.3);
 
   //Routes internes(droite)
     //rond point 1
@@ -416,6 +515,13 @@ if(slider.value = 1) {
       //stroke(255, 0 , 0);
       //strokeWeight(10);
       rect(1250, 680, 150, 100);
+
+    //cache
+      fill(30);
+      stroke(255);
+      strokeWeight(10);
+      rect(0, 950, 2000, 150);
+
 
 
 

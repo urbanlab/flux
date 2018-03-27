@@ -6,6 +6,17 @@
   <script src="/assets-visu/addons/p5.dom.min.js"></script>
   <script src="/assets-visu/addons/p5.sound.min.js"></script>
   <script src="/assets-visu/sketch.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/assets-visu/utils.js"></script>
+  <script>
+	const socket = io.connect('http://localhost:3000/visu');
+	var histogram = [];
+
+	socket.on('histogram', function (data) {
+		histogram = data;
+		console.log('data: ' + data);
+	});
+  </script>
 </head>
 <body>
 </body>
