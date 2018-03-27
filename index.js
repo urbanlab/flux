@@ -7,12 +7,22 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const utils = require('./scripts/utils');
 const algo  = require('./scripts/algo');
+const fs  = require('fs');
+
 
 var taux = 20;
 var lastClient = 0;
 var clients = {};
+var profile = JSON.parse(fs.readFileSync('./ressources/profiles', {encoding: 'utf-8'}));
 var histogram = [4, 4, 4, 4, 5, 6, 6, 7, 8, 8, 9, 9, 9, 10, 5, 6, 6, 7, 2, 1, 3];
 
+function get_prob_array(path_to_file) {
+	file = fs.readFileSync(path_to_file, {encoding: 'utf-8'});
+	ret = JSON.parse(file);
+	return (ret);
+};
+
+prob_array = get_prob_array('./ressources/prob_file.json');
 
 //Root listener
 app.use('/assets-visu', express.static('views/visu'));
@@ -55,24 +65,27 @@ mobile.on('connection', function(socket) {
 
     var clientId = lastClient++;
     clients[clientId] = {};
+    socket.on('client', function (id) {
+    	socket.emit('profile', profile[id]);	
+    });
 
     //On start message stock the value in client[id]
     socket.on('start', function(v) {
         console.log('client[',clientId,'].start=',v);
         clients[clientId]['start'] = v;
-        utils.updateVisu(clients, visu, histogram);
+        utils.updateVisu(clients);
     });
 
     //On end message stock the value in client[id]
     socket.on('end', function(v) {
         console.log('client[',clientId,'].end=',v);
         clients[clientId]['end'] = v;
-        utils.updateVisu(clients, visu, histogram);
+        utils.updateVisu(clients);
     });
 
     //On connect delete the user that disconnect
     socket.on('disconnect', function() {
         delete clients[clientId];
-        utils.updateVisu(clients, visu, histogram);
+        utils.updateVisu(clients);
     });
 });

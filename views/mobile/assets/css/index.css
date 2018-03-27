@@ -58,6 +58,23 @@ img {
 	margin: 20px;
 }
 
+.profil {
+	float: left;
+	height: 100px;
+	width: 700px;
+	margin: 0px 20px;
+}
+
+h6 {
+	font-family: 'Montserrat';
+	font-weight: 700;
+	font-size: 40px;
+  line-height: 0px;
+  color: #ffffff;
+	text-align: center;
+	margin: 50px 0px;
+}
+
 .logo {
 	float: right;
 	height: 100%;
@@ -108,7 +125,6 @@ h2 {
 	width: 70%;
 	margin: auto;
 	margin-bottom: 200px;
-	background-color: blue;
 }
 
 #timebis {
