@@ -52,7 +52,6 @@ mobile.on('connection', function(socket) {
 
     //On start message stock the value in client[id]
     socket.on('start', function(v) {
-	algo.sort_users();
         console.log('client[',clientId,'].start=',v);
         clients[clientId]['start'] = v;
         utils.updateVisu(clients, visu);

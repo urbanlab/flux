@@ -3,10 +3,12 @@
 const fs   = require('fs');
 const path = require('path');
 
+const nbr_people = 1500;
+
 module.exports = {
 
 //Sort all user by time and ask
-sort_users: function () {
+sort_users: function (clients) {
 	prob_array = get_prob_array('./prob_file.json');
 	
 	//TODO: Adding algo
