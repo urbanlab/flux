@@ -1,0 +1,16 @@
+{
+   "lyon7": {
+      "from": "158 Rue Marcel Mérieux, 69007 Lyon"
+      "time": "35"
+    },
+
+   "villeurbanne": {
+      "from": "109 Rue de Fontanières, 69100 Villeurbanne"
+      "time": "45"
+   },
+   
+   "tassin": {
+      "from": "11 Avenue Maréchal Foch, 69160 Tassin-la-Demi-Lune"
+      "time": "25"
+   }
+}

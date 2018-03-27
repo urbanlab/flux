@@ -9,7 +9,7 @@ module.exports = {
 
 //Sort all user by time and ask
 sort_users: function (clients) {
-	prob_array = get_prob_array('./prob_file.json');
+	prob_array = get_prob_array('./ressources/prob_file.json');
 	
 	//TODO: Adding algo
 	return (prob_array);
