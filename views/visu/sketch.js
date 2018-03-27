@@ -38,7 +38,7 @@ function setup() {
     console.log('yo');
     background(30);
 
-    slider = createSlider(6, 24, 12);
+    slider = createSlider(0, 24, 24);
     slider.position(100, 1000);
     slider.style('width', '1750px');
 

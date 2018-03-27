@@ -11,14 +11,11 @@ const algo  = require('./scripts/algo');
 var taux = 20;
 var lastClient = 0;
 var clients = {};
-
+var histogram = [4, 4, 4, 4, 5, 6, 6, 7, 8, 8, 9, 9, 9, 10, 5, 6, 6, 7, 2, 1, 3];
 
 
 //Root listener
-
 app.use('/assets-visu', express.static('views/visu'));
-
-
 
 app.get('/', function(req, res) {
     res.send("Hello World!");
@@ -45,7 +42,7 @@ var visu = io.of('/visu');
 //Visu socket listener
 visu.on('connection', function(socket) {
     console.log('someone connected on visu');
-    socket.emit('taux', taux);
+    socket.emit('histogram', histogram);
 });
 
 //Declaring mobile socket
@@ -61,19 +58,19 @@ mobile.on('connection', function(socket) {
     socket.on('start', function(v) {
         console.log('client[',clientId,'].start=',v);
         clients[clientId]['start'] = v;
-        utils.updateVisu(clients, visu);
+        utils.updateVisu(clients, visu, histogram);
     });
 
     //On end message stock the value in client[id]
     socket.on('end', function(v) {
         console.log('client[',clientId,'].end=',v);
         clients[clientId]['end'] = v;
-        updateVisu(clients, visu);
+        utils.updateVisu(clients, visu, histogram);
     });
 
     //On connect delete the user that disconnect
     socket.on('disconnect', function() {
         delete clients[clientId];
-        utils.updateVisu(clients, visu);
+        utils.updateVisu(clients, visu, histogram);
     });
 });
