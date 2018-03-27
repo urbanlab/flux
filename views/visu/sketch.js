@@ -32,12 +32,22 @@ var slider;
 var cars;
 //var button;
 
+var congestionMin = 1;
+var congestionMax = 10;
+var congestionPropagationInitial = 10;
+var congestionPropagation = congestionPropagationInitial;
+var congestionPropagationFactor = 1;
+var colorGreen = 120;
+var colorRed = 0;
+
+var congestion = 1;
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   img  = loadImage("/assets-visu/assets/bg.png");
   tree = loadImage("/assets-visu/assets/arbre.png");
     console.log('yo');
-    background(30);
+
 
 
     cars = createSlider(0,100,100);
@@ -45,7 +55,7 @@ function setup() {
     cars.style('width', '300px');
 
 
-    slider = createSlider(0, 24, 24);
+    slider = createSlider(0, 24, 0, 1);
     slider.position(100, 1000);
     slider.style('width', '1750px');
 
@@ -68,15 +78,26 @@ function setup() {
 }
 
 function updateColor(histogram, index) {
-  var congestion = histogram[index];
-  console.log(congestion);
+  congestion = histogram[index];
+  console.log('congestion:',congestion);
 }
 
 function draw() {
+  background(30);
 
-updateColor(histogram, slider.value());
+
+  colorMode(RGB, 360);
+
+  updateColor(histogram, slider.value());
+  var congestionColor = int(map(congestion, congestionMin, congestionMax, colorGreen, colorRed));
+  congestionPropagationFactor = map(congestion, congestionMin, congestionMax, 1, 0);
+
+  congestionPropagation = congestionPropagationInitial * congestionPropagationFactor;
 
   var clr = cars.value();
+
+  fill(255)
+  rect(100, 200-congestion*10, 100, congestion*10);
 
   if(clr <= 25){
     r = 0;
@@ -106,8 +127,8 @@ updateColor(histogram, slider.value());
     b1 = 0;
   }
 
-  fill(r, g, b);
-  rect(100, 100, 100, 100);
+  //fill(r, g, b);
+  //rect(100, 100, 100, 100);
 
 
  //image(img, 0, 0, windowWidth, windowHeight);
@@ -142,25 +163,29 @@ updateColor(histogram, slider.value());
       //voie de droite
       stroke(100);
       strokeWeight(30);
-      line(600, 0, 600, 2000);
+      line(600, 0, 600, 600);
+
+      colorMode(HSB, 360, 100, 100);
+
       //avant virage
-      stroke(r, g, b, 25);
+      stroke(min(congestionColor+congestionPropagation*11, colorGreen), 100, 100);
       strokeWeight(30);
       line(600, 900, 600, 1000);
 
-      stroke(r, g, b, 50);
+      stroke(min(congestionColor+congestionPropagation*10, colorGreen), 100, 100);
       strokeWeight(30);
       line(600, 800, 600, 900);
 
-      stroke(r, g, b, 75);
+      stroke(min(congestionColor+congestionPropagation*9, colorGreen), 100, 100);
       strokeWeight(30);
       line(600, 700, 600, 800);
 
-      stroke(r, g, b, 100);
+      stroke(min(congestionColor+congestionPropagation*8, colorGreen), 100, 100);
       strokeWeight(30);
       line(600, 580, 600, 700);
 
 
+      colorMode(RGB, 360);
     //gauche
       //fond
       stroke(0);
@@ -172,6 +197,11 @@ updateColor(histogram, slider.value());
       line(500, 0, 500, 2000);
 
     //virage
+
+
+      colorMode(HSB, 360, 100, 100);
+
+
       //noFill();
       //stroke(r, g, b);
       //strokeWeight(30);
@@ -180,60 +210,64 @@ updateColor(histogram, slider.value());
       //arc(1100, 605, 1001, 880, PI, PI + HALF_PI);
 
       noFill();
-      stroke(r, g, b);
+      stroke(congestionColor,100,100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 4.7);
 
       noFill();
-      stroke(r1, g1, b1);
+      stroke(min(congestionColor+congestionPropagation, colorGreen), 100, 100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 4.5);
 
       noFill();
-      stroke(140, 140, 140);
+      stroke(min(congestionColor+congestionPropagation*2, colorGreen), 100, 100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 4.3);
 
       noFill();
-      stroke(160, 160, 160);
+      stroke(min(congestionColor+congestionPropagation*3, colorGreen), 100, 100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 4.1);
 
       noFill();
-      stroke(180, 180, 180);
+      stroke(min(congestionColor+congestionPropagation*4, colorGreen), 100, 100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 3.9);
 
       noFill();
-      stroke(200, 200, 200);
+      stroke(min(congestionColor+congestionPropagation*5, colorGreen), 100, 100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 3.7);
 
       noFill();
-      stroke(220, 220, 220);
+      stroke(min(congestionColor+congestionPropagation*6, colorGreen), 100, 100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 3.5);
 
       noFill();
-      stroke(255, 255, 255);
+      stroke(min(congestionColor+congestionPropagation*7, colorGreen), 100, 100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 3.3);
+
+
+
+        colorMode(RGB, 360);
 
   //Routes internes(droite)
     //rond point 1

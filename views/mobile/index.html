@@ -7,7 +7,7 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script>
-	const socket = io.connect('http://localhost:3000/mobile');
+	const socket = io.connect('/mobile');
 
 	$(document).ready(function () {
 		socket.on('profile', function (data) {
@@ -17,8 +17,20 @@
 			$("#time-user").html(data.time);
 		});
 
+		$("#arrivalStart").on("change",function(d) {
+		    var start = $(this).val();
+			console.log('start', start);
+        	socket.emit('start', start);
+		});
+
+
+		$("#arrivalEnd").on("change",function(d) {
+		    var end = $(this).val();
+			console.log('end', end);
+        	socket.emit('end', end);
+		});
 	});
-	socket.emit('client', 'lyon7');
+	socket.emit('client', new URL(window.location).searchParams.get("profile"));
    </script>
 
 </head>
@@ -27,40 +39,46 @@
 
     <div class="container">
        <div id="menu" class="element">
-       <div class="burger"> 
-          <img src="assets/images/menu.png"> 
+       <div class="burger">
+          <img src="assets/images/menu.png">
        </div>
        <div class="profil">
           <h6> <span id="name"></h6>
        </div>
        <div class="logo">
-           <img src="assets/images/logo.png"> 
+           <img src="assets/images/logo.png">
        </div>
     </div>
-    <div id="titre" class="element"> 
-    	<h1> Votre trajet du jour </h1> 
+    <div id="titre" class="element">
+    	<h1> Votre trajet du jour </h1>
     </div>
-    <div id="soustitre"> 
-    	<h4>Ce matin </h4> 
+
+    <div class="trajet">
+      <img class="maison" src="assets/images/maison.png">
+      <span id="from">
     </div>
-    <div id="depart" class="element"> 
+
+    <div id="soustitre">
+    	<h4>Ce matin </h4>
+    </div>
+    <div id="depart" class="element">
     	<h2> Vous voulez arriver à :</h2>
     </div>
-    <input id="time" type="time">
-    <div id="flexibilite" class="element"> 
-    	<h3> Vous pouvez arriver entre :</h3> 
+    <input id="arrivalTime" class="time" type="time">
+    <div id="flexibilite" class="element">
+    	<h3> Vous pouvez arriver entre :</h3>
     </div>
     <div id="flexible">
-      <input id="timebis" type="time">
-      <input id="timebis" type="time">
+      <input id="arrivalStart" class="timebis" type="time">
+      <input id="arrivalEnd" class="timebis" type="time">
     </div>
     <div id="soustitre"> <h4> Ce soir </h4> </div>
     <div id="depart" class="element"> <h2> Vous voulez arriver à :</h2> </div>
-    <input id="time" type="time">
+    <input class="time" type="time">
     <div id="flexibilite" class="element"> <h3> Vous pouvez arriver entre :</h3> </div>
     <div id="flexible">
-      <input id="timebis" type="time">
-      <input id="timebis" type="time">
+      <input class="timebis" type="time">
+      <input class="timebis" type="time">
     </div>
   </div>
 
