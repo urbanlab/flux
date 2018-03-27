@@ -147,16 +147,23 @@ function repart_mean(sub_vect, s, e, Num) {
 
 const nbr_people = 1500;
 
+function make_histo (histogram, start, end, Num) {
+	extract_vect = extract(histogram, start, end, Num);
+	sub_vect = sub_extract(list, extract_vect);
+	repart = repart_proba(sub_vect, start, end, Num);
+	return (repart);
+	//repart_mean(sub_vect, start, end, Num);
+}
+
 module.exports = {
 
 //Sort all user by time and ask
 sort_users: function () {
-	prob_array = get_prob_array('./ressources/prob_file.json');
 	Num = 600;
 	start = 1;
 	end = 3;
 
-	console.log('Rinitial =', list =  [100, 500, 1100, 2700, 1200, 400, 200]);
+	console.log('Rinitial =', list = [100, 500, 1100, 2700, 1200, 400, 200]);
 	console.log('extract_vect = ', (extract_vect = extract(list, start, end, Num)));
 	console.log('sub_vect = ', (sub_vect = sub_extract(list, extract_vect)));
 	console.log('repart = ', repart_proba(sub_vect, start, end, Num));
@@ -167,11 +174,6 @@ sort_users: function () {
 };
 
 //Get probabilities from a file
-function get_prob_array(path_to_file) {
-	file = fs.readFileSync(path_to_file, {encoding: 'utf-8'});
-	ret = JSON.parse(file);
-	return (ret);
-};
 
 //Get an index from an hour
 function hour_to_index(hour) {

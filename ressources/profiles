@@ -2,18 +2,21 @@
    "lyon7": {
       "from": "158 Rue Marcel Mérieux, 69007 Lyon",
       "time": "35",
-      "name": "Lucie"
+      "name": "Lucie",
+      "count": "300"
     },
 
    "villeurbanne": {
       "from": "109 Rue de Fontanières, 69100 Villeurbanne",
       "time": "45",
-      "name": "Jean-Marie"
+      "name": "Jean-Marie",
+      "count": "300"
    },
    
    "tassin": {
       "from": "11 Avenue Maréchal Foch, 69160 Tassin-la-Demi-Lune",
       "time": "25",
-      "name": "Luc"
+      "name": "Luc",
+      "count": "300"
    }
 }

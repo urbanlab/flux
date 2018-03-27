@@ -1,20 +1,17 @@
 //Javascript file for sorting functions
 
+
+
 module.exports = {
-updateVisu: function (clients, visu, histogram) {
-		console.log(clients);
-		var count = 0;
-		var sum = 0;
-		for(c in clients) {
-			if(clients[c]['start']) {
-				sum += Number(clients[c]['start']);
-				count++;
+updateVisu: function (clients) {
+		HT = prob_array;
+		for (var i in clients) {
+			if (clients[i]['start'] && clients[i]['end']) {
+				HT = make_histo(HT, clients[i]['start'], clients[i]['end'], 300);
 			}
+			console.log('histogram = ', HT);
+			visu.emit('histogram', HT);
 		}
-		console.log('Sum:',sum);
-		taux = sum / count;
-		console.log('histogram:',histogram);
-		visu.emit('histogram',histogram);
 	     },
 
 color_changer: function (index, histogram) {
