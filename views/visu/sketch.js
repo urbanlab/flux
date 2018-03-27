@@ -38,7 +38,7 @@ function setup() {
     console.log('yo');
     background(30);
 
-    slider = createSlider(6, 24, 12);
+    slider = createSlider(0, 24, 24);
     slider.position(100, 1000);
     slider.style('width', '1750px');
 
@@ -158,16 +158,6 @@ function draw() {
   image(tree, 1650, 560);
 
 
-
-
-//SLIDERS
-/*
-if(slider.value = 1) {
-  r = 0;
-} else {
-  r = 255;
-}
-*/
  //CARTE
 
   //Autoroute
@@ -181,9 +171,22 @@ if(slider.value = 1) {
       strokeWeight(30);
       line(600, 0, 600, 2000);
       //avant virage
-      stroke(r, g, b);
+      stroke(r, g, b, 25);
       strokeWeight(30);
-      line(600, 580, 600, 2000);
+      line(600, 900, 600, 1000);
+
+      stroke(r, g, b, 50);
+      strokeWeight(30);
+      line(600, 800, 600, 900);
+
+      stroke(r, g, b, 75);
+      strokeWeight(30);
+      line(600, 700, 600, 800);
+
+      stroke(r, g, b, 100);
+      strokeWeight(30);
+      line(600, 580, 600, 700);
+
 
     //gauche
       //fond
@@ -202,6 +205,62 @@ if(slider.value = 1) {
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, PI + HALF_PI);
+
+      noFill();
+      stroke(100, 100, 100);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 4.7);
+
+      noFill();
+      stroke(120, 120, 120);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 4.5);
+
+      noFill();
+      stroke(140, 140, 140);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 4.3);
+
+      noFill();
+      stroke(160, 160, 160);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 4.1);
+
+      noFill();
+      stroke(180, 180, 180);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 3.9);
+
+      noFill();
+      stroke(200, 200, 200);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 3.7);
+
+      noFill();
+      stroke(220, 220, 220);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 3.5);
+
+      noFill();
+      stroke(255, 255, 255);
+      strokeWeight(30);
+      strokeCap(SQUARE);
+      //smooth();
+      arc(1100, 605, 1001, 880, PI, 3.3);
 
   //Routes internes(droite)
     //rond point 1
