@@ -18,7 +18,8 @@ var clients = {};
 
 app.use('/assets-visu', express.static('views/visu'));
 
-
+app.use('/mobile/libs', express.static('views/mobile/libs'));
+app.use('/mobile/assets', express.static('views/mobile/assets'));
 
 app.get('/', function(req, res) {
     res.send("Hello World!");
