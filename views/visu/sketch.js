@@ -34,14 +34,16 @@ var cars;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  img = loadImage("/assets-visu/assets/bg.png");
+  img  = loadImage("/assets-visu/assets/bg.png");
   tree = loadImage("/assets-visu/assets/arbre.png");
     console.log('yo');
     background(30);
 
+
     cars = createSlider(0,100,100);
     cars.position(100, 800);
     cars.style('width', '300px');
+
 
     slider = createSlider(0, 24, 24);
     slider.position(100, 1000);
@@ -64,87 +66,16 @@ function setup() {
     thirty.size(100, 100);
     */
 }
-/*
-function change10(){
-  r = 255;
-  g = 0;
-  b = 0;
 
-  r1 = 255;
-  g1 = 69;
-  b1 = 0;
-
-  r2 = 255;
-  g2 = 0;
-  b2 = 0;
-
-  r3 = 255;
-  g3 = 255;
-  b3 = 0;
-
-  r4 = 255;
-  g4 = 255;
-  b4 = 0;
-
-  r5 = 255;
-  g5 = 0;
-  b5 = 0;
+function updateColor(histogram, index) {
+  var congestion = histogram[index];
+  console.log(congestion);
 }
-
-function change20(){
-  r = 255;
-  g = 0;
-  b = 0;
-
-  r1 = 255;
-  g1 = 255;
-  b1 = 0;
-
-  r2 = 255;
-  g2 = 255;
-  b2 = 0;
-
-  r3 = 0;
-  g3 = 255;
-  b3 = 0;
-
-  r4 = 0;
-  g4 = 255;
-  b4 = 0;
-
-  r5 = 255;
-  g5 = 255;
-  b5 = 0;
-}
-
-function change30(){
-  r = 255;
-  g = 69;
-  b = 0;
-
-  r1 = 0;
-  g1 = 255;
-  b1 = 0;
-
-  r2 = 0;
-  g2 = 255;
-  b2 = 0;
-
-  r3 = 0;
-  g3 = 255;
-  b3 = 0;
-
-  r4 = 0;
-  g4 = 255;
-  b4 = 0;
-
-  r5 = 255;
-  g5 = 255;
-  b5 = 0;
-}
-*/
 
 function draw() {
+
+updateColor(histogram, slider.value());
+
   var clr = cars.value();
 
   if(clr <= 25){
@@ -180,6 +111,8 @@ function draw() {
 
 
  //image(img, 0, 0, windowWidth, windowHeight);
+
+//image(img, 0, 0, windowWidth, windowHeight);
 //au dessus virage
   image(tree, 680, 180);
   image(tree, 780, 70);
