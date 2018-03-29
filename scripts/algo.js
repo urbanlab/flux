@@ -109,9 +109,17 @@ function push_extract(sub_vect, new_extract) {
 }
 
 function repart_proba(sub_vect, s, e, Num) {
-	console.log('reverse = ', reverse = reverse_proba_special(sub_vect, s, e));
-	console.log('new_extract = ', new_extract = extract(reverse, s, e, Num));
-	return push_extract(sub_vect, new_extract);
+    reverse = reverse_proba_special(sub_vect, s, e);
+	console.log('reverse = ', reverse);
+
+	new_extract = extract(reverse, s, e, Num)
+	console.log('new_extract = ', new_extract);
+
+	reparted = push_extract(sub_vect, new_extract);
+	console.log('reparted = ', reparted);
+
+	return reparted;
+
 }
 
 function repart_mean(sub_vect, s, e, Num) {
@@ -147,38 +155,36 @@ function repart_mean(sub_vect, s, e, Num) {
 
 const nbr_people = 1500;
 
-function make_histo (histogram, start, end, Num) {
-	extract_vect = extract(histogram, start, end, Num);
-	sub_vect = sub_extract(list, extract_vect);
-	repart = repart_proba(sub_vect, start, end, Num);
+function make_histo (histogram, start, end, num) {
+    console.log("Updating histogram start=",start," end=",end, "num=",num);
+	extract_vect = extract(histogram, start, end, num);
+	sub_vect = sub_extract(histogram, extract_vect);
+	repart = repart_proba(sub_vect, start, end, num);
 	return (repart);
 	//repart_mean(sub_vect, start, end, Num);
 }
 
-module.exports = {
-
-//Sort all user by time and ask
-sort_users: function () {
-	Num = 600;
-	start = 1;
-	end = 3;
-
-	console.log('Rinitial =', list = [100, 500, 1100, 2700, 1200, 400, 200]);
-	console.log('extract_vect = ', (extract_vect = extract(list, start, end, Num)));
-	console.log('sub_vect = ', (sub_vect = sub_extract(list, extract_vect)));
-	console.log('repart = ', repart_proba(sub_vect, start, end, Num));
-	repart_mean(sub_vect, start, end, Num);
-	//TODO: Adding algo
-	return (prob_array);
+function scale_histogram(hist, n) {
+    var pHist = my_softmax(hist);
+    console.log(n);
+    var rHist = [];
+    for(var i=0; i<pHist.length; i++) {
+        rHist[i] = Math.round(pHist[i] * n);
+    }
+    return rHist;
 }
-};
 
-//Get probabilities from a file
-
-//Get an index from an hour
-function hour_to_index(hour) {
-	trunc_hour = parseInt(hour);
-	minutes = hour - trunc_hour;
-	index = ((trunc_hour - 6) * 4) + Math.round(minutes / 0.15)
-	return (index);
-};
+module.exports = {
+    updateVisu: function (visu, clients) {
+        console.log("Updating repartition: ", clients);
+		HT = prob_array;
+		for (var i in clients) {
+			if (clients[i]['start'] && clients[i]['end']) {
+			    console.log("Reaffectation profile ",i);
+				HT = make_histo(HT, clients[i]['start'], clients[i]['end'], 300);
+			}
+		}
+		visu.emit('histogram', scale_histogram(HT,150));
+    },
+    scale_histogram: scale_histogram
+}

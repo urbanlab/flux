@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-
+<html>
 <head>
+    <title>Flux App</title>
+  <link rel="manifest" href="assets/manifest.json">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
   <link href="assets/css/index.css" type="text/css" rel="stylesheet">
@@ -11,11 +13,14 @@
 	const socket = io.connect('/mobile');
 
 	$(document).ready(function () {
+        // Update data with profile sent from backend
 		socket.on('profile', function (data) {
 			console.log('data', data);
-			$("#name").html(data.name);
-			$("#from").html(data.from);
-			$("#time-user").html(data.time);
+			if(data) {
+                $("#name").html(data.name);
+                $("#from").html(data.from);
+                $("#time-user").html(data.time);
+            }
 		});
 
 		$("#arrivalStart").on("change",function(d) {
@@ -30,8 +35,13 @@
 			console.log('end', end);
         	socket.emit('end', end);
 		});
+
+        console.log("Connected user");
+		socket.emit('client', 'unknown');
+		var profileId = /\?profile=(.*)/.exec(window.location)[1];
+		console.log("User connected:",profileId);
+		socket.emit('client', profileId);
 	});
-	socket.emit('client', new URL(window.location).searchParams.get("profile"));
    </script>
 
 </head>
@@ -105,5 +115,4 @@
   </div>
 
 </body>
-
 </html>
