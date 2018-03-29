@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html>
+
 <head>
-    <title>Flux App</title>
-  <link rel="manifest" href="assets/manifest.json">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
   <link href="assets/css/index.css" type="text/css" rel="stylesheet">
@@ -13,14 +11,11 @@
 	const socket = io.connect('/mobile');
 
 	$(document).ready(function () {
-        // Update data with profile sent from backend
 		socket.on('profile', function (data) {
 			console.log('data', data);
-			if(data) {
-                $("#name").html(data.name);
-                $("#from").html(data.from);
-                $("#time-user").html(data.time);
-            }
+			$("#name").html(data.name);
+			$("#from").html(data.from);
+			$("#time-user").html(data.time);
 		});
 
 		$("#arrivalStart").on("change",function(d) {
@@ -35,14 +30,10 @@
 			console.log('end', end);
         	socket.emit('end', end);
 		});
-
-        console.log("Connected user");
-		socket.emit('client', 'unknown');
-		var profileId = /\?profile=(.*)/.exec(window.location)[1];
-    $("#calImage").attr("src","assets/images/"+profileId+".png")
-		console.log("User connected:",profileId);
-		socket.emit('client', profileId);
 	});
+  var profileId = new URL(window.location).searchParams.get("profile");
+	socket.emit('client', profileId);
+  $('#calImage').attr("src","assets/images/"+profileId+".png");
    </script>
 
 </head>
@@ -61,50 +52,46 @@
            <img src="assets/images/logo.png">
           </div>
        </div>
-       <div id="titre" class="element">
-    	   <h1> Votre trajet de demain </h1>
+
+       <div class="trajetdebut">
+         <img class="maison" src="assets/images/maison.png">
+         <span id="from">
+       </div>
+       <div class="trajetfin">
+         <img class="entreprise" src="assets/images/entreprise.png">
+         <span class="vers"> 2 rue des Érables, 69760 Limonest</span>
        </div>
 
        <div class="calendarpicto">
          <img src="assets/images/calend.png">
        </div>
 
-       <div class="calendar">
-         <div class="subtitle">
-           <h5 class="cal"> Calendrier </h5>
-         </div>
-         <div class="grille">
-           <img id="calImage" src="assets/images/lyon7.png">
+       <div class="bulle">
+         <div id="titre" class="element">
+    	     <h1> Bonjour Lucie, comment allez-vous ? Prévoyons ensemble votre trajet de demain :) </h1>
          </div>
        </div>
 
-       <script>
-        $(function() {
-          $('.calendarpicto').on('click', function() {
-          $('.calendar').toggleClass('show');
-          });
-        });
-       </script>
+       <div class="bulle2">
+          <div id="soustitre">
+    	      <h4>Demain matin </h4>
+          </div>
+          <div id="depart" class="element">
+    	      <h2> Je voudrais arriver à :</h2>
+          </div>
+          <div class="heuredepart">
+             <input id="arrivalTime" class="time" type="time">
+          </div>
+          <div id="flexibilite" class="element">
+    	      <h3> Je peux arriver entre :</h3>
+          </div>
+          <div id="flexible">
+            <input id="arrivalStart" class="timebis" type="time">
+            <input id="arrivalEnd" class="timebis" type="time">
+          </div>
+       </div>
 
-    <div class="trajet">
-      <img class="maison" src="assets/images/maison.png">
-      <span id="from">
-    </div>
-
-    <div id="soustitre">
-    	<h4>Demain matin </h4>
-    </div>
-    <div id="depart" class="element">
-    	<h2> Vous voulez arriver à :</h2>
-    </div>
-    <input id="arrivalTime" class="time" type="time">
-    <div id="flexibilite" class="element">
-    	<h3> Vous pouvez arriver entre :</h3>
-    </div>
-    <div id="flexible">
-      <input id="arrivalStart" class="timebis" type="time">
-      <input id="arrivalEnd" class="timebis" type="time">
-    </div>
+<!--
     <div id="soustitre"> <h4> Demain soir </h4> </div>
     <div id="depart" class="element"> <h2> Vous voulez arriver à :</h2> </div>
     <input class="time" type="time">
@@ -113,7 +100,31 @@
       <input class="timebis" type="time">
       <input class="timebis" type="time">
     </div>
-  </div>
+-->
+
+   </div>
+
+  <div class="calendar-wrapper">
+     <div class="calendar">
+       <div class="subtitle">
+         <h5 class="cal"> Calendrier </h5>
+       </div>
+       <div class="grille">
+         <img id="calImage" src="assets/images/lyon7.png">
+       </div>
+     </div>
+   </div>
+
+   <script>
+    $(function() {
+      $('.calendarpicto').on('click', function() {
+      $('.calendar-wrapper').toggleClass('show');
+      });
+    });
+   </script>
+
+
 
 </body>
+
 </html>
