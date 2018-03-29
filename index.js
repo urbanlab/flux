@@ -14,6 +14,7 @@ var clients = {};
 var profile = JSON.parse(fs.readFileSync('./ressources/profiles', {encoding: 'utf-8'}));
 var histogram = [4, 4, 4, 4, 5, 6, 6, 7, 8, 8, 9, 9, 9, 10, 5, 6, 6, 7, 2, 1, 3];
 
+
 var totalPeople = 10000;
 
 function get_prob_array(path_to_file) {
