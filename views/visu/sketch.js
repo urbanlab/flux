@@ -1,9 +1,10 @@
 var slider;
 var histogram;
+var trajet;
 
 var time = ['06:00', '06:15', '06:30', '06:45', '07:00', '07:15', '07:30', '07:45', '08:00', '08:15', '08:30', '08:45', '09:00', '09:15', '09:30', '09:45', '10:00', '10:15', '10:30', '10:45' ,'11:00', '11:15', '11:30', '11:45', '12:00'];
 var flux = [
-	[600, 880], [600,860], [600, 840], [600,820], [600, 800], [600, 780], [600,760], [600, 740], [600,720], [600, 700], [600, 680], [600,660], [600, 640], [600,620], [600, 600], [600,580], [602,560], [605,540], [609,520], [614,500], [620,480], [627,460], [635,440], [645,420], [656,400], [668,380], [682,360], [700,340], [700,340], [717,320], [740,300], [763,280], [788,260], [820,240], [856,220], [890,205], [925,193], [955,183], [985,176], [1015,170], [1045,167], [1075,165], [1098,165], [1110,190], [1130,205], [1110,190], [1155,220], [1155,240], [1155,260], [1155,280], [1155,300], [1155,320], [1155,340], [1155,360], [1155,380], [1155,400], [1155,420], [1155,440], [1155,460], [1155,480], [1155,500], [1155,520], [1155,540], [1155,560], [1155,580], [1155,600], [1155,620], [1155,640], [1155,660], [1155,680], [1155,700], [1155,720], [1155,740], [1155,760], [1155,780], [1155,800], [1155,820], [1155,840], [1175,850], [1195,850], [1215,850], [1235,850], [1255,850], [1275,850], [1295,850], [1320,850], [1320, 830]
+	[600, 880], [600,860], [600, 840], [600,820], [600, 800], [600, 780], [600,760], [600, 740], [600,720], [600, 700], [600, 680], [600,660], [600, 640], [600,620], [600, 600], [600,580], [602,560], [605,540], [609,520], [614,500], [620,480], [627,460], [635,440], [645,420], [656,400], [668,380], [682,360], [700,340], [700,340], [717,320], [740,300], [763,280], [788,260], [820,240], [856,220], [890,205], [925,193], [955,183], [985,176], [1015,170], [1045,167], [1075,165], [1098,165], [1110,190], [1130,205], [1155,220], [1155,240], [1155,260], [1155,280], [1155,300], [1155,320], [1155,340], [1155,360], [1155,380], [1155,400], [1155,420], [1155,440], [1155,460], [1155,480], [1155,500], [1155,520], [1155,540], [1155,560], [1155,580], [1155,600], [1155,620], [1155,640], [1155,660], [1155,680], [1155,700], [1155,720], [1155,740], [1155,760], [1155,780], [1155,800], [1155,820], [1155,840], [1175,850], [1195,850], [1215,850], [1235,850], [1255,850], [1275,850], [1295,850], [1320,850], [1320, 830]
 ]
 //var cars;
 //var button;
@@ -35,8 +36,10 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   img  = loadImage("/assets-visu/assets/bg.png");
   tree = loadImage("/assets-visu/assets/arbre.png");
+	autoroute = loadImage("/assets-visu/assets/a6.png");
+	histogrey = loadImage("/assets-visu/assets/histogrey.png");
+	tram = loadImage("/assets-visu/assets/tram.png")
     console.log('yo');
-
 
     /*
     cars = createSlider(0,100,100);
@@ -65,6 +68,7 @@ function setup() {
     thirty.mousePressed(change30)
     thirty.size(100, 100);
     */
+
 }
 
 function updateColor(_histogram, index) {
@@ -164,19 +168,19 @@ image(img, 0, 0, windowWidth, windowHeight);
       colorMode(HSB, 360, 100, 100);
 
       //avant virage
-      stroke(min(congestionColor+congestionPropagation*11, colorGreen), 100, 100);
+      stroke(min(congestionColor+congestionPropagation*11, colorGreen), 70, 100);
       strokeWeight(30);
       line(600, 900, 600, 1000);
 
-      stroke(min(congestionColor+congestionPropagation*10, colorGreen), 100, 100);
+      stroke(min(congestionColor+congestionPropagation*10, colorGreen), 70, 100);
       strokeWeight(30);
       line(600, 800, 600, 900);
 
-      stroke(min(congestionColor+congestionPropagation*9, colorGreen), 100, 100);
+      stroke(min(congestionColor+congestionPropagation*9, colorGreen), 70, 100);
       strokeWeight(30);
       line(600, 700, 600, 800);
 
-      stroke(min(congestionColor+congestionPropagation*8, colorGreen), 100, 100);
+      stroke(min(congestionColor+congestionPropagation*8, colorGreen), 70, 100);
       strokeWeight(30);
       line(600, 580, 600, 700);
 
@@ -213,49 +217,49 @@ image(img, 0, 0, windowWidth, windowHeight);
       arc(1100, 605, 1001, 880, PI, 4.7);
 
       noFill();
-      stroke(min(congestionColor+congestionPropagation, colorGreen), 100, 100);
+      stroke(min(congestionColor+congestionPropagation, colorGreen), 70, 100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 4.5);
 
       noFill();
-      stroke(min(congestionColor+congestionPropagation*2, colorGreen), 100, 100);
+      stroke(min(congestionColor+congestionPropagation*2, colorGreen), 70, 100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 4.3);
 
       noFill();
-      stroke(min(congestionColor+congestionPropagation*3, colorGreen), 100, 100);
+      stroke(min(congestionColor+congestionPropagation*3, colorGreen), 70, 100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 4.1);
 
       noFill();
-      stroke(min(congestionColor+congestionPropagation*4, colorGreen), 100, 100);
+      stroke(min(congestionColor+congestionPropagation*4, colorGreen), 70, 100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 3.9);
 
       noFill();
-      stroke(min(congestionColor+congestionPropagation*5, colorGreen), 100, 100);
+      stroke(min(congestionColor+congestionPropagation*5, colorGreen), 70, 100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 3.7);
 
       noFill();
-      stroke(min(congestionColor+congestionPropagation*6, colorGreen), 100, 100);
+      stroke(min(congestionColor+congestionPropagation*6, colorGreen), 70, 100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
       arc(1100, 605, 1001, 880, PI, 3.5);
 
       noFill();
-      stroke(min(congestionColor+congestionPropagation*7, colorGreen), 100, 100);
+      stroke(min(congestionColor+congestionPropagation*7, colorGreen), 70, 100);
       strokeWeight(30);
       strokeCap(SQUARE);
       //smooth();
@@ -456,7 +460,7 @@ image(img, 0, 0, windowWidth, windowHeight);
         line(1155, 214, 1155, 2000);
       //portion colorée
         colorMode(HSB, 360, 100, 100);
-        stroke(120, 100, 100);
+        stroke(120, 70, 100);
         strokeWeight(30);
         line(1155, 214, 1155, 840);
         colorMode(RGB, 255);
@@ -470,16 +474,20 @@ image(img, 0, 0, windowWidth, windowHeight);
 
         colorMode(HSB, 360, 100, 100);
       //portion colorée
-        stroke(120, 100, 100);
+        stroke(120, 70, 100);
         strokeWeight(15);
         strokeCap(SQUARE);
         line(1140, 850, 1330, 850);
       //remontée
-        stroke(120, 100, 100);
+        stroke(120, 70, 100);
         strokeWeight(28);
         strokeCap(SQUARE);
         line(1322, 819, 1322, 858);
         colorMode(RGB, 255);
+
+			//tram
+				//if((i <= 2000 &&  ))
+
 
 
     //entreprise
@@ -491,9 +499,16 @@ image(img, 0, 0, windowWidth, windowHeight);
 
     //cache
       fill(30);
-      stroke(255);
-      strokeWeight(10);
+      //stroke(255);
+      //strokeWeight(10);
+			noStroke();
       rect(-30, 900, 2000, 350);
+
+			tint(255, 127);
+			image(histogrey, 0, 920);
+			tint(255, 255);
+
+
 
   //histogram
     var lar = windowWidth/25;
@@ -506,7 +521,8 @@ image(img, 0, 0, windowWidth, windowHeight);
         fill(255);
 				var color = int(map(histogram[i], congestionMin, congestionMax, colorGreen, colorRed));
 				fill(min(color, colorGreen), 70, 100);
-        if (i == slider.value()) {
+
+				if (i == slider.value()) {
           //stroke(255);
           //strokeWeight(5);
 					fill(255);
@@ -574,6 +590,25 @@ image(img, 0, 0, windowWidth, windowHeight);
 			flashlightsSlowFramesCount = 0;
 		}
 
+		textFont(MontserratBold);
+		textSize(30);
+		textAlign(CORNERS);
+		fill(0);
+		text('Heure d\'arrivée estimée', 50, 350);
+		fill(255);
+		rect(50, 380, 420, 500);
+		textFont(Montserrat);
+		textSize(30);
+		textAlign(CORNERS);
+		fill(0);
+		text('Lucie :', 50, 400);
+		//text('Lucie', 50, 400);
+		text('Jean-Marie :', 50, 460);
+		//text('Lucie', 50, 400);
+		text('Luc :', 50, 520);
+		//text('Lucie', 50, 400);
+
+
 
 		console.log(flashlights);
 
@@ -593,6 +628,9 @@ image(img, 0, 0, windowWidth, windowHeight);
         ellipse(flux[h][0], flux[h][1], 10, 10);
        }
     }
+
+		image(autoroute, 510, 300, windowWidth/24, windowHeight/24);
+
 
     //rectMode(CENTER);
 
