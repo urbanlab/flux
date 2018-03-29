@@ -11,10 +11,16 @@
   <script>
 	const socket = io.connect('/visu');
 	var histogram = [];
+	var trajet = [];
 
 	socket.on('histogram', function (data) {
 		histogram = data;
-		console.log('data: ',data);
+		console.log('histo: ',data);
+	});
+
+	socket.on('times', function(data) {
+		trajet = data;
+		console.log('times: ',data);
 	});
   </script>
 </head>
