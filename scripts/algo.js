@@ -196,7 +196,7 @@ function random_from_probability(vector, s, e, num)
 	var extracted = extract(vector, s, e, num);
 	var soft = my_softmax(extracted);
 	var rand_float = Math.random().toFixed(4);
-	var index = get_rand_index(soft, rand_float);
+	return get_rand_index(soft, rand_float);
 }
 
 const nbr_people = 1500;
@@ -212,7 +212,6 @@ function make_histo (histogram, start, end, num) {
 	repart = my_repart(sub_vect, start, end, num);
 	console.log('repart = ', repart);
 
-	random_from_probability(repart, start, end, num);
 	return (repart);
 	//repart_mean(sub_vect, start, end, Num);
 }
