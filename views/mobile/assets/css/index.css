@@ -1,45 +1,111 @@
-h1 {
-	font-family: 'Montserrat';
-	font-weight: 700;
-	float: left;
-	font-size: 60px;
-	margin: 80px;
+img {
+	width: 100%;
 }
 
-/*h1:after {
-  content : "";
-  display: block;
-  width: 350px;
-	padding-top: 7px;
-  border-bottom: 15px solid #00c6c1;
-}*/
+html, body {
+	overflow:auto;
+	width:100%;
+	margin:0;
+	padding:0;
+}
 
-.soustitre {
+.container {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	background-color: #FFFFF;
+	overflow:auto;
+}
+
+
+/*Menu*/
+
+.burger{
+	float: left;
+	height: 80%;
+	width: 60px;
+	margin: 20px;
+}
+
+.profil {
+	float: left;
 	height: 100px;
-  width: 100%;
+	width: 700px;
+	margin: 0px 20px;
 }
 
-h4 {
+h6 {
 	font-family: 'Montserrat';
 	font-weight: 700;
-	float: left;
-	font-size: 40px;
-	margin: 40px 80px 10px 80px;
+	font-size: 50px;
+  line-height: 0px;
+  color: #ffffff;
+	text-align: center;
+	margin: 50px 0px;
 }
 
-h4:after {
-  content : "";
-  display: block;
-  width: 200px;
-	padding-top: 7px;
-  border-bottom: 15px solid #00c6c1;
+.logo {
+	float: right;
+	height: 100%;
+	width: 90px;
+	margin: 18px;
 }
+
+#menu {
+	background-color: #3f3f3f;
+	height: 100px;
+	z-index: 2;
+}
+
+
+/* Trajet Maison-Boulot */
+
+.trajetdebut {
+	display: flex;
+	margin: 80px 0px 0px 0px;
+}
+
+.maison {
+	width: 40px;
+	height: 40px;
+	margin: 0px 0px 0px 80px;
+}
+
+#from {
+	font-family: "Montserrat";
+	font-weight: 700;
+	font-size: 30px;
+	margin: 0px 80px 20px 40px;
+	color: #00c6c1;
+}
+
+.trajetfin {
+	display: flex;
+	margin: 0px 0px 20px 0px;
+}
+
+.entreprise {
+	width: 40px;
+	height: 40px;
+	margin: 0px 0px 20px 80px;
+}
+
+.vers {
+	font-family: "Montserrat";
+	font-weight: 700;
+	font-size: 30px;
+	margin: 0px 80px 20px 40px;
+	color: #00c6c1;
+}
+
+
+/* Partie calendrier */
 
 .calendarpicto {
 	width: 80px;
 	height: 100px;
 	position: absolute;
-  top: 200px;
+  top: 180px;
 	right:50px;
 	z-index: 2;
 }
@@ -48,14 +114,25 @@ h4:after {
 	position: absolute;
   background-color: white;
 	z-index: 1;
-	width: 0%;
-	height: 0%;
-	margin-left : 100%;
+	width: 100%;
+	height: 100%;
+	overflow:auto;
+	top: 0%;
+	left: 100%;
 	transition: all 300ms ease;
 }
 
-.show {
-	margin-left: 0px;
+.calendar-wrapper {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	overflow: hidden;
+}
+
+.show .calendar {
+	left: 0px;
 	width: 100%;
 	height: 1730px;
 }
@@ -88,95 +165,75 @@ h5:after {
 	margin: 350px auto;
 }
 
-h3 {
-	font-family: "Montserrat";
-	font-weight: 400;
-	font-size: 40px;
-	margin: 0px 80px 0px 80px;
-}
-
-img {
-	width: 100%;
-}
-
 .cal {
 	margin-top: 200px;
 }
 
-.container {
-	width: 100%;
-	height: 500px;
-	display: flex;
-	flex-direction: column;
-	background-color: #FFFFF;
-}
 
-.element {
-	width: 100%;
-}
+/* Première bulle */
 
-.burger{
-	float: left;
-	height: 80%;
-	width: 60px;
-	margin: 20px;
-}
-
-.profil {
-	float: left;
-	height: 100px;
-	width: 700px;
-	margin: 0px 20px;
-}
-
-h6 {
-	font-family: 'Montserrat';
-	font-weight: 700;
-	font-size: 50px;
-  line-height: 0px;
-  color: #ffffff;
-	text-align: center;
-	margin: 50px 0px;
-}
-
-.logo {
-	float: right;
-	height: 100%;
-	width: 90px;
-	margin: 10px;
-}
-
-#menu {
-	background-color: #3f3f3f;
-	height: 100px;
-	z-index: 2;
+.bulle {
+	width: 80%;
+  height: 200px;
+	background-color: #00c6c1;
+	margin: 20px 0px 50px 80px;
+	border-radius: 20px;
 }
 
 #titre {
 	height: 170px;
 }
 
-.trajet {
-	display: flex;
-	margin: 0px 0px 50px 0px;
+.element {
+	width: 100%;
 }
 
-.maison {
-	width: 40px;
-	height: 40px;
-	margin: 0px 0px 50px 80px;
-}
-
-#from {
-	font-family: "Montserrat";
+h1 {
+	font-family: 'Montserrat';
 	font-weight: 700;
-	font-size: 30px;
-	margin: 0px 80px 50px 40px;
-	color: #00c6c1;
+	float: left;
+	font-size: 35px;
+	margin: 20px;
+}
+
+
+
+/*Deuxième bulle*/
+
+.bulle2{
+	height: 700px;
+	width: 80%;
+	border-style: solid;
+	border-color: #00c6c1;
+	border-width: 8px;
+	border-radius: 20px;
+  margin-left: 140px;
+}
+
+#soustitre {
+	height: 100px;
+  width: 100%;
+}
+
+h4 {
+	font-family: 'Montserrat';
+	font-weight: 700;
+	float: left;
+	font-size: 40px;
+	margin: 40px 80px 10px 80px;
+}
+
+h4:after {
+  content : "";
+  display: block;
+  width: 200px;
+	padding-top: 7px;
+  border-bottom: 15px solid #00c6c1;
 }
 
 #depart {
 	height: 100px;
+	float: left;
 }
 
 h2 {
@@ -186,15 +243,22 @@ h2 {
 	margin: 10px 80px;
 }
 
+.heuredepart {
+	display: flex;
+	height: 100px;
+	width: 70%;
+	margin: auto;
+	margin-bottom: 80px;
+}
+
 .time {
-	padding: 50px;
-	margin: 80px auto;
 	height: 100px;
 	width: 300px;
 	font-family: "Montserrat";
 	font-weight: 700;
 	font-size: 100px;
 	color: #00c6c1;
+	margin: auto;
 	border-style: none;
 	text-align: center;
 }
@@ -203,18 +267,24 @@ h2 {
 	height: 100px;
 }
 
+h3 {
+	font-family: "Montserrat";
+	font-weight: 400;
+	font-size: 40px;
+	margin: 0px 80px 0px 80px;
+}
+
 #flexible {
 	display: flex;
-  height: 500px;
+  height: 130px;
 	width: 70%;
-	margin: auto;
-	margin-bottom: 200px;
+	margin: 0px auto 30px auto;
 }
 
 .timebis {
 	height: 100px;
 	width: 300px;
-	margin: 60px auto;
+	margin: 0px auto 60px auto;
 	font-family: "Montserrat";
 	font-weight: 700;
 	font-size: 100px;
