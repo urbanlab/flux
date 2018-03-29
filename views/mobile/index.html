@@ -39,6 +39,7 @@
         console.log("Connected user");
 		socket.emit('client', 'unknown');
 		var profileId = /\?profile=(.*)/.exec(window.location)[1];
+    $("#calImage").attr("src","assets/images/"+profileId+".png")
 		console.log("User connected:",profileId);
 		socket.emit('client', profileId);
 	});
@@ -73,7 +74,7 @@
            <h5 class="cal"> Calendrier </h5>
          </div>
          <div class="grille">
-           <img src="assets/images/lucie_cal.png">
+           <img id="calImage" src="assets/images/lyon7.png">
          </div>
        </div>
 
