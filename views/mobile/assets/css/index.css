@@ -17,7 +17,6 @@ h1 {
 .soustitre {
 	height: 100px;
   width: 100%;
-	background: blue;
 }
 
 h4 {
@@ -36,6 +35,59 @@ h4:after {
   border-bottom: 15px solid #00c6c1;
 }
 
+.calendarpicto {
+	width: 80px;
+	height: 100px;
+	position: absolute;
+  top: 200px;
+	right:50px;
+	z-index: 2;
+}
+
+.calendar {
+	position: absolute;
+  background-color: white;
+	z-index: 1;
+	width: 0%;
+	height: 0%;
+	margin-left : 100%;
+	transition: all 300ms ease;
+}
+
+.show {
+	margin-left: 0px;
+	width: 100%;
+	height: 1730px;
+}
+
+.subtitle {
+	height: 100px;
+  width: 100%;
+	margin: 40px 80px 10px 80px;
+}
+
+h5 {
+	font-family: 'Montserrat';
+	font-weight: 700;
+	float: left;
+	font-size: 40px;
+	margin: 40px 80px 10px 80px;
+}
+
+h5:after {
+  content : "";
+  display: block;
+  width: 200px;
+	padding-top: 7px;
+  border-bottom: 15px solid #00c6c1;
+}
+
+.grille {
+	width: 80%;
+	height: 840px;
+	margin: 350px auto;
+}
+
 h3 {
 	font-family: "Montserrat";
 	font-weight: 400;
@@ -45,6 +97,10 @@ h3 {
 
 img {
 	width: 100%;
+}
+
+.cal {
+	margin-top: 200px;
 }
 
 .container {
@@ -93,6 +149,7 @@ h6 {
 #menu {
 	background-color: #3f3f3f;
 	height: 100px;
+	z-index: 2;
 }
 
 #titre {
