@@ -48,6 +48,11 @@
             $("#suggestedTime").html(v);
             $("#suggestion").show();
         });
+	
+	socket.on('time-move',function(v) {
+            $("#timeMove").html(v);
+            $("#timeMove").show();
+        });
    </script>
 
 </head>
@@ -107,7 +112,8 @@
 
         <div class="bulle" id="suggestion" style="display: none">
             <div class="element">
-                <h1> Je vous propose de partir à <span id="suggestedTime"></span> pour fluidifer le trafic. </h1>
+                <h1> Votre trajet va durer <span id="timeMove"> minutes. </h1>
+                <h1> Je vous propose de partir à <span id="suggestedTime"> pour fluidifer le trafic. </h1>
             </div>
         </div>
 <!--

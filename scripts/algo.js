@@ -226,6 +226,16 @@ function scale_histogram(hist, n) {
     return rHist;
 }
 
+function index2hour(index) {
+	hour = index / 4;
+	minutes = (index % 4) * 15;
+	return (hour + ':' + minutes);
+}
+
+function () {
+
+}
+
 module.exports = {
     updateVisu: function (visu, clients, sockets) {
         console.log("Updating repartition: ", clients);
@@ -235,7 +245,8 @@ module.exports = {
 			if (!(clients[clientId]['start'] === undefined) && !(clients[clientId]['end'] === undefined)) {
 				HT = make_histo(HT, clients[clientId]['start'], clients[clientId]['end'], Number(clients[clientId]['count']));
 				if(sockets[clientId]) {
-                    sockets[clientId].emit('suggestion','7:00');
+                    			sockets[clientId].emit('suggestion', '7:00');
+					sockets[clientId].emit('time-move', '25');
 				}
 			}
 		}
