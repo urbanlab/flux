@@ -12,7 +12,9 @@ const fs  = require('fs');
 var taux = 20;
 var clients = {};
 var profile = JSON.parse(fs.readFileSync('./ressources/profiles', {encoding: 'utf-8'}));
+var sockets = {};
 var histogram = [4, 4, 4, 4, 5, 6, 6, 7, 8, 8, 9, 9, 9, 10, 5, 6, 6, 7, 2, 1, 3];
+
 
 var totalPeople = 5000;
 
@@ -24,9 +26,19 @@ function get_prob_array(path_to_file) {
 
 function time2index(time) {
     var res = /([0-9]{1,2}):([0-9]{2})/.exec(time);
-    var hours = res[1];
-    var minutes = res[2];
-    return (hours - 6)*4 + minutes / 15;
+    if(res) {
+        var hours = res[1];
+        var minutes = res[2];
+        var timeIndex = (hours - 6)*4 + minutes / 15;
+        if(timeIndex < 0) {
+            timeIndex = 0;
+        } else if(timeIndex > 24) {
+            timeIndex = 24;
+        }
+        return timeIndex;
+    } else {
+        return undefined;
+    }
 }
 
 prob_array = algo.scale_histogram(get_prob_array('./ressources/prob_file.json'), totalPeople);
@@ -62,7 +74,7 @@ var visu = io.of('/visu');
 //Visu socket listener
 visu.on('connection', function(socket) {
     console.log('someone connected on visu');
-    algo.updateVisu(visu, profile);
+    algo.updateVisu(visu, profile, sockets);
 });
 
 //Declaring mobile socket
@@ -74,29 +86,33 @@ mobile.on('connection', function(socket) {
     socket.on('client', function (id) {
         clientId = id;
         console.log("sending profile for",id," : ",profile[id]);
+        sockets[clientId] = socket;
     	socket.emit('profile', profile[id]);
     });
 
     //On start message stock the value in client[id]
     socket.on('start', function(v) {
         if(clientId) {
-            console.log('client[',clientId,'].start=',v);
-            profile[clientId]['start'] = time2index(v);
-            algo.updateVisu(visu, profile);
+            profile[clientId] = profile[clientId] || {};
+            var startTimeIndex = time2index(v);
+            console.log('client[',clientId,'].start=',v," (",startTimeIndex,")");
+            profile[clientId]['start'] = startTimeIndex;
+            algo.updateVisu(visu, profile, sockets);
         }
     });
 
     //On end message stock the value in client[id]
     socket.on('end', function(v) {
         if(clientId) {
-            console.log('client[',clientId,'].end=',v);
-            profile[clientId]['end'] = time2index(v) ;
-            algo.updateVisu(visu, profile);
+            profile[clientId] = profile[clientId] || {};
+            var endTimeIndex = time2index(v);
+            console.log('client[',clientId,'].end=',v," (",endTimeIndex,")");
+            profile[clientId]['end'] = endTimeIndex;
+            algo.updateVisu(visu, profile, sockets);
         }
     });
 
-    //On connect delete the user that disconnect
     socket.on('disconnect', function() {
-        algo.updateVisu(visu, profile);
+        delete sockets[clientId];
     });
 });

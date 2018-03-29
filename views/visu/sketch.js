@@ -2,18 +2,26 @@ var slider;
 var histogram;
 
 var time = ['06:00', '06:15', '06:30', '06:45', '07:00', '07:15', '07:30', '07:45', '08:00', '08:15', '08:30', '08:45', '09:00', '09:15', '09:30', '09:45', '10:00', '10:15', '10:30', '10:45' ,'11:00', '11:15', '11:30', '11:45', '12:00'];
+var flux = [
+	[600,1000], [600, 980], [600,960], [600, 940], [600,920], [600, 900], [600, 880], [600,860], [600, 840], [600,820], [600, 800], [600, 780], [600,760], [600, 740], [600,720], [600, 700], [600, 680], [600,660], [600, 640], [600,620], [600, 600], [600,580], [602,560], [605,540], [609,520], [614,500], [620,480], [627,460], [635,440]
+];
 //var cars;
 //var button;
 
 var congestionMin = 1;
-var congestionMax = 10;
-var congestionPropagationInitial = 10;
+var congestionMax = 13;
+var congestionPropagationInitial = 13;
 var congestionPropagation = congestionPropagationInitial;
-var congestionPropagationFactor = 1;
+var congestionPropagationFactor = 1.5;
 var colorGreen = 120;
 var colorRed = 0;
 
 var congestion = 1;
+
+var flashlights = new Array();
+var flashlightsDensity = 5;
+var flashlightsFramesCountMax = 15;
+var flashlightsFramesCount = 0;
 
 function preload() {
   Montserrat = loadFont('/assets-visu/assets/Montserrat-Regular.ttf');
@@ -63,7 +71,7 @@ function updateColor(_histogram, index) {
 }
 
 function draw() {
-  background(30);
+  background(255);
 
 
   colorMode(RGB, 360);
@@ -114,8 +122,9 @@ function draw() {
 
  //image(img, 0, 0, windowWidth, windowHeight);
 
-//image(img, 0, 0, windowWidth, windowHeight);
+image(img, 0, 0, windowWidth, windowHeight);
 //au dessus virage
+	/*
   image(tree, 680, 180);
   image(tree, 780, 70);
   image(tree, 820, 50);
@@ -131,18 +140,18 @@ function draw() {
   image(tree, 1300, 900);
   image(tree, 1370, 950);
   image(tree, 1650, 560);
-
+*/
 
  //CARTE
 
   //Autoroute
     //droite
       //fond
-      stroke(0);
+      stroke(0, 0, 0, 30);
       strokeWeight(60);
       line(585, 0, 585, 2000);
       //voie de droite
-      stroke(100);
+      stroke(230);
       strokeWeight(30);
       line(600, 0, 600, 600);
 
@@ -169,11 +178,11 @@ function draw() {
       colorMode(RGB, 360);
     //gauche
       //fond
-      stroke(0);
+      stroke(0, 0, 0, 30);
       strokeWeight(60 );
       line(515, 0, 515, 2000);
       //voie de droite
-      stroke(100);
+      stroke(230);
       strokeWeight(30);
       line(500, 0, 500, 2000);
 
@@ -251,25 +260,12 @@ function draw() {
         colorMode(RGB, 360);
 
   //Routes internes(droite)
-    //rond point 1
-      //fond
-        noFill();
-        stroke(100);
-        strokeWeight(30);
-        strokeCap(SQUARE);
-        arc(1160, 150, 130, 130, 0, TWO_PI);
-        //ellipse(1150, 165, 100, 100);
-      //virage
-        //noFill();
-        //stroke(r2, g2, b2);
-        //strokeWeight(30);
-        //strokeCap(SQUARE);
-        //arc(1160, 150, 130, 130, HALF_PI, PI);
+
 
     //rond point 2
       //fond
         noFill();
-        stroke(100);
+        stroke(230);
         strokeWeight(30);
         strokeCap(SQUARE);
         //arc(1160, 150, 130, 130, 0, TWO_PI);
@@ -278,59 +274,59 @@ function draw() {
     //rond point2 vers la Droite
       //route principale
         noFill();
-        stroke(100);
+        stroke(230);
         strokeWeight(30);
         strokeCap(SQUARE);
         line(1600, 310, 2000, 310);
       //impasse
         //droite1
           noFill();
-          stroke(100);
+          stroke(230);
           strokeWeight(15);
           strokeCap(ROUND);
           line(1700, 500, 1850, 500);
         //bas
           noFill();
-          stroke(100);
+          stroke(230);
           strokeWeight(15);
           strokeCap(ROUND);
           line(1700, 500, 1700, 310);
         //bas et haut
           noFill();
-          stroke(100);
+          stroke(230);
           strokeWeight(15);
           strokeCap(ROUND);
           line(1850, 400, 1850, 600);
         //bas2
           noFill();
-          stroke(100);
+          stroke(230);
           strokeWeight(15);
           strokeCap(ROUND);
           line(1750, 500, 1750, 560);
         //gauche
           noFill();
-          stroke(100);
+          stroke(230);
           strokeWeight(15);
           strokeCap(ROUND);
           line(1750, 560, 1720, 560);
 
     //rond point 2 vers le haut
       noFill();
-      stroke(100);
+      stroke(230);
       strokeWeight(30);
       strokeCap(SQUARE);
       line(1550, 240, 1550, -20);
 
     //Relie les deux rond points
       noFill();
-      stroke(100);
+      stroke(230);
       strokeWeight(30);
       strokeCap(SQUARE);
       line(1220, 180, 1500, 285);
 
     //Relie le rond point 2 avec la route sud
       noFill();
-      stroke(100);
+      stroke(230);
       strokeWeight(15);
       strokeCap(SQUARE);
       line(1510, 350, 1155, 750);
@@ -338,131 +334,154 @@ function draw() {
     //Relie le rond point 2 avec la route est
       //bas
         noFill();
-        stroke(100);
+        stroke(230);
         strokeWeight(30);
         strokeCap(SQUARE);
         line(1550, 350, 1550, 700);
       //virage
         noFill();
-        stroke(100);
+        stroke(230);
         strokeWeight(30);
         strokeCap(SQUARE);
         arc(1615, 700, 130, 130, HALF_PI, PI);
       //droite
         noFill();
-        stroke(100);
+        stroke(230);
         strokeWeight(30);
         strokeCap(SQUARE);
         line(1610, 765, 2000, 765);
       //bas2
         noFill();
-        stroke(100);
+        stroke(230);
         strokeWeight(30);
         strokeCap(SQUARE);
         line(1550, 700, 1550, 2000);
       //impasse Droite
         noFill();
-        stroke(100);
+        stroke(230);
         strokeWeight(15);
         strokeCap(ROUND);
         line(1560, 965, 1730, 965);
 
     //Relie route est avec route entreprise
       noFill();
-      stroke(100);
+      stroke(230);
       strokeWeight(15);
       strokeCap(SQUARE);
       arc(1375, 785, 130, 130, 0, HALF_PI);
       noFill();
-      stroke(100);
+      stroke(230);
       strokeWeight(15);
       strokeCap(SQUARE);
       line(1440, 425, 1440, 790);
       noFill();
-      stroke(100);
+      stroke(230);
       strokeWeight(15);
       strokeCap(SQUARE);
       line(1396, 589, 1550, 589);
       noFill();
-      stroke(100);
+      stroke(230);
       strokeWeight(15);
       strokeCap(SQUARE);
       arc(1350, 615, 50, 50, 0, HALF_PI);
       noFill();
-      stroke(100);
+      stroke(230);
       strokeWeight(15);
       strokeCap(SQUARE);
       arc(1400, 615, 50, 50, HALF_PI*2, PI + HALF_PI);
 
     //Route nord
-      stroke(100);
+      stroke(230);
       strokeWeight(30);
       strokeCap(ROUND);
       line(1155, 0, 1155, 80);
 
     //3eme sortie rond point
-      stroke(100);
+      stroke(230);
       strokeWeight(15);
       strokeCap(ROUND);
       line(1100, 120, 950, -20);
 
     //Mini vers la droite
-      stroke(100);
+      stroke(230);
       strokeWeight(15);
       strokeCap(SQUARE);
       line(1144, 640, 1350, 640);
 
     //Vers la gauche, impasse
       //gauche1
-        stroke(100);
+        stroke(230);
         strokeWeight(15);
         strokeCap(ROUND);
         line(1144, 540, 900, 540);
       //bas
-        stroke(100);
+        stroke(230);
         strokeWeight(15);
         strokeCap(SQUARE);
         line(900, 540, 900, 740);
       //gauche2
-        stroke(100);
+        stroke(230);
         strokeWeight(15);
         strokeCap(ROUND);
         line(900, 740, 650, 740);
 
+        //rond point 1
+          //fond
+            noFill();
+            stroke(230);
+            strokeWeight(30);
+            strokeCap(SQUARE);
+            arc(1160, 150, 130, 130, 0, TWO_PI);
+            //ellipse(1150, 165, 100, 100);
+          //virage
+            colorMode(HSB, 360, 100, 100);
+            noFill();
+            stroke(80, 100, 100,);
+            strokeWeight(30);
+            strokeCap(SQUARE);
+            arc(1160, 150, 130, 130, HALF_PI, PI);
+            colorMode(RGB, 255);
+
     //Route sud
       //fond
-        stroke(100);
+        stroke(230);
         strokeWeight(30);
         strokeCap(ROUND);
         line(1155, 214, 1155, 2000);
       //portion colorée
-        //stroke(r3, g3, b3);
-        //strokeWeight(30);
-        //line(1155, 214, 1155, 840);
+        colorMode(HSB, 360, 100, 100);
+        stroke(120, 100, 100);
+        strokeWeight(30);
+        line(1155, 214, 1155, 840);
+        colorMode(RGB, 255);
 
     //Droite vers entreprise
       //fond
-        stroke(100);
+        stroke(230);
         strokeWeight(15);
         strokeCap(SQUARE);
         line(1144, 850, 1375, 850);
+
+        colorMode(HSB, 360, 100, 100);
       //portion colorée
-        //stroke(r4, g4, b4);
-      //  strokeWeight(15);
-        //strokeCap(SQUARE);
-        //line(1140, 850, 1300, 850);
+        stroke(120, 100, 100);
+        strokeWeight(15);
+        strokeCap(SQUARE);
+        line(1140, 850, 1330, 850);
       //remontée
-        //stroke(r5, g5, b5);
-        //strokeWeight(30);
-      //  strokeCap(SQUARE);
-      //  line(1300, 680, 1300, 858);
+        stroke(120, 100, 100);
+        strokeWeight(28);
+        strokeCap(SQUARE);
+        line(1322, 819, 1322, 858);
+        colorMode(RGB, 255);
+
 
     //entreprise
-      fill(200);
-      noStroke();
+      //fill(200);
+      //noStroke();
       //stroke(255, 0 , 0);
       //strokeWeight(10);
-      rect(1200, 730, 200, 100);
+      //rect(1200, 730, 200, 100);
 
     //cache
       fill(30);
@@ -491,19 +510,59 @@ function draw() {
        if (time.hasOwnProperty(j)) {
         textSize(140);
         textFont(MontserratBold);
-        textAlign(CENTER);
+        textAlign(CORNER);
         noStroke();
         fill(255, 255, 255, 0)
         if (j == slider.value()){
-          fill(255);
+          fill(0);
         }
-        text(time[j], 200, 200);
+        text(time[j], 40, 200);
        }
 
     }
     colorMode(RGB, 255);
-    //rectMode(CENTER);
+		ellipseMode(CENTER);
+/*
+		flashlightsFramesCount++;
 
+		if (flashlightsFramesCount == flashlightsFramesCountMax) {
+			if (flashlights.length == 0) {
+				flashlights.unshift(-1); // add light
+			}
+
+			for(var i = 0; i < flashlights.length; i++) {
+				flashlights[i]++;
+				if (flashlights[i] > flux.length) {
+					flashlights.splice(i, 1); // remove light
+				}
+
+				if (i == 0) {
+					if (flashlights[i] == flashlightsDensity) {
+						flashlights.unshift(-1); // add light
+					}
+				}
+			}
+
+			flashlightsFramesCount = 0;
+		}
+
+		console.log(flashlights);
+
+		for(var h in flux) {
+       if (flux.hasOwnProperty(h)) {
+        stroke(255);
+        strokeWeight(5);
+        fill(255);
+          //console.log(flux[h][1]);
+
+					if (flashlights.indexOf(parseInt(h)) != -1) {
+						stroke(255,0,0);
+					}
+        ellipse(flux[h][0], flux[h][1], 10, 10);
+       }
+    }
+		*/
+    //rectMode(CENTER);
 
 
 
@@ -517,5 +576,5 @@ window.onload = function() {
     sliderCurrentIndex++;
     if(sliderCurrentIndex == 25) {sliderCurrentIndex = 0}
     document.getElementsByTagName('input')[0].value = sliderCurrentIndex;
-  }, 200);
+  }, 800);
 };

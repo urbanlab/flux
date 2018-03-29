@@ -203,13 +203,16 @@ function scale_histogram(hist, n) {
 }
 
 module.exports = {
-    updateVisu: function (visu, clients) {
+    updateVisu: function (visu, clients, sockets) {
         console.log("Updating repartition: ", clients);
 		HT = prob_array;
-		for (var i in clients) {
-			console.log("Reaffectation profile ",i, clients[i]);
-			if (!(clients[i]['start'] === undefined) && !(clients[i]['end'] === undefined)) {
-				HT = make_histo(HT, clients[i]['start'], clients[i]['end'], Number(clients[i]['count']));
+		for (var clientId in clients) {
+			console.log("Reaffectation profile",clientId, ":", clients[clientId]);
+			if (!(clients[clientId]['start'] === undefined) && !(clients[clientId]['end'] === undefined)) {
+				HT = make_histo(HT, clients[clientId]['start'], clients[clientId]['end'], Number(clients[clientId]['count']));
+				if(sockets[clientId]) {
+                    sockets[clientId].emit('suggestion','7:00');
+				}
 			}
 		}
 		visu.emit('histogram', scale_histogram(HT,150));
