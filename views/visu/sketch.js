@@ -507,9 +507,12 @@ image(img, 0, 0, windowWidth, windowHeight);
 				var color = int(map(histogram[i], congestionMin, congestionMax, colorGreen, colorRed));
 				fill(min(color, colorGreen), 70, 100);
         if (i == slider.value()) {
-          stroke(255);
-          strokeWeight(5);
+          //stroke(255);
+          //strokeWeight(5);
+					fill(255);
+					rect(lar * i, 1080-histogram[i]*13, lar+1, histogram[i]*13);
           fill(min(congestionColor+congestionPropagation, colorGreen), 100, 100);
+
         }
         rect(lar * i, 1080-histogram[i]*12, lar+1, histogram[i]*12);
        }
