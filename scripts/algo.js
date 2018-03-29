@@ -122,6 +122,29 @@ function repart_proba(sub_vect, s, e, Num) {
 
 }
 
+function get_min(sub_vect, s, e)
+{
+	var min = s;
+
+	for (i = s; i <= e; i++) {
+		if (sub_vect[i] < sub_vect[min])
+			min = i;
+	}
+	return (min);
+}
+
+function my_repart(sub_vect, s, e , num)
+{
+	var i = 0;
+	var index = 0;
+
+	for (var y = 0; y < num; y++) {
+		index = get_min(sub_vect, s, e);
+		sub_vect[index]++;
+	}
+	return (sub_vect);
+}
+
 function repart_mean(sub_vect, s, e, Num) {
 	var sum = 0;
 	var little_sum = 0;
@@ -158,8 +181,13 @@ const nbr_people = 1500;
 function make_histo (histogram, start, end, num) {
     console.log("Updating histogram start=",start," end=",end, "num=",num);
 	extract_vect = extract(histogram, start, end, num);
+	console.log('extract = ', extract_vect);
+
 	sub_vect = sub_extract(histogram, extract_vect);
-	repart = repart_proba(sub_vect, start, end, num);
+	console.log('sub_vect = ', sub_vect);
+
+	repart = my_repart(sub_vect, start, end, num);
+	console.log('repart = ', repart);
 	return (repart);
 	//repart_mean(sub_vect, start, end, Num);
 }
@@ -175,13 +203,16 @@ function scale_histogram(hist, n) {
 }
 
 module.exports = {
-    updateVisu: function (visu, clients) {
+    updateVisu: function (visu, clients, sockets) {
         console.log("Updating repartition: ", clients);
 		HT = prob_array;
-		for (var i in clients) {
-			if (clients[i]['start'] && clients[i]['end']) {
-			    console.log("Reaffectation profile ",i);
-				HT = make_histo(HT, clients[i]['start'], clients[i]['end'], 300);
+		for (var clientId in clients) {
+			console.log("Reaffectation profile",clientId, ":", clients[clientId]);
+			if (!(clients[clientId]['start'] === undefined) && !(clients[clientId]['end'] === undefined)) {
+				HT = make_histo(HT, clients[clientId]['start'], clients[clientId]['end'], Number(clients[clientId]['count']));
+				if(sockets[clientId]) {
+                    sockets[clientId].emit('suggestion','7:00');
+				}
 			}
 		}
 		visu.emit('histogram', scale_histogram(HT,150));
