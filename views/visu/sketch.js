@@ -80,12 +80,19 @@ function updateColor(_histogram, index) {
   console.log('congestion:',congestion);
 }
 
+function updateTrajet(_trajet, index) {
+	trajet = _trajet;
+	heure = trajet[index];
+	console.log('heure', heure);
+}
+
 function draw() {
   background(255);
 
 
   colorMode(RGB, 360);
 
+	updateTrajet(trajet);
   updateColor(histogram, slider.value());
   var congestionColor = int(map(congestion, congestionMin, congestionMax, colorGreen, colorRed));
   congestionPropagationFactor = map(congestion, congestionMin, congestionMax, 1, 0);
