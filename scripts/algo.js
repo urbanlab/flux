@@ -232,9 +232,7 @@ function index2hour(index) {
 	return (hour + ':' + minutes);
 }
 
-function () {
 
-}
 
 module.exports = {
     updateVisu: function (visu, clients, sockets) {
