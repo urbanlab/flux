@@ -208,8 +208,8 @@ module.exports = {
 		HT = prob_array;
 		for (var i in clients) {
 			console.log("Reaffectation profile ",i, clients[i]);
-			if (clients[i]['start'] && clients[i]['end']) {
-				HT = make_histo(HT, clients[i]['start'], clients[i]['end'], 300);
+			if (!(clients[i]['start'] === undefined) && !(clients[i]['end'] === undefined)) {
+				HT = make_histo(HT, clients[i]['start'], clients[i]['end'], Number(clients[i]['count']));
 			}
 		}
 		visu.emit('histogram', scale_histogram(HT,150));
