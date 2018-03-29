@@ -1,35 +1,7 @@
-//Autoroute
-  var r = 255; //rouge
-  var g = 0; //vert
-  var b = 0; //bleu
-
-//virage
-  var r1 = 255; //rouge
-  var g1 = 0; //vert
-  var b1 = 0; //bleu
-
-//rond point
-  var r2 = 255; //rouge
-  var g2 = 0; //vert
-  var b2 = 0; //bleu
-
-//sud
-  var r3 = 255; //rouge
-  var g3 = 0; //vert
-  var b3 = 0; //bleu
-
-//droite
-  var r4 = 255; //rouge
-  var g4 = 0; //vert
-  var b4 = 0; //bleu
-
-//remontée
-  var r5 = 255; //rouge
-  var g5 = 0; //vert
-  var b5 = 0; //bleu
-
 var slider;
 var histogram;
+
+var time = ['06:00', '06:15', '06:30', '06:45', '07:00', '07:15', '07:30', '07:45', '08:00', '08:15', '08:30', '08:45', '09:00', '09:15', '09:30', '09:45', '10:00', '10:15', '10:30', '10:45' ,'11:00', '11:15', '11:30', '11:45', '12:00'];
 //var cars;
 //var button;
 
@@ -42,6 +14,11 @@ var colorGreen = 120;
 var colorRed = 0;
 
 var congestion = 1;
+
+function preload() {
+  Montserrat = loadFont('/assets-visu/assets/Montserrat-Regular.ttf');
+  MontserratBold = loadFont('/assets-visu/assets/Montserrat-Bold.ttf');
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -60,7 +37,7 @@ function setup() {
     slider = createSlider(0, 24, 0, 1);
     slider.position(100, 1040);
     slider.style('width', '0px');
-
+    slider.hide();
     /*
     ten = createButton('10%');
     ten.position(100, 100);
@@ -503,10 +480,26 @@ function draw() {
         noStroke();
         fill(255);
         if (i == slider.value()) {
+          stroke(255);
+          strokeWeight(5);
           fill(min(congestionColor+congestionPropagation, colorGreen), 100, 100);
         }
         rect(lar * i, 1080-histogram[i]*15, lar+1, histogram[i]*15);
        }
+    }
+    for(var j in time) {
+       if (time.hasOwnProperty(j)) {
+        textSize(140);
+        textFont(MontserratBold);
+        textAlign(CENTER);
+        noStroke();
+        fill(255, 255, 255, 0)
+        if (j == slider.value()){
+          fill(255);
+        }
+        text(time[j], 200, 200);
+       }
+
     }
     colorMode(RGB, 255);
     //rectMode(CENTER);
