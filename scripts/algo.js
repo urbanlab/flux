@@ -73,7 +73,7 @@ function get_coef(Rinitial, s, e, Num) {
 		return (0);
 }
 
-function extract (Rinitial, s, e, Num)
+function extract(Rinitial, s, e, Num)
 {
 	var i = 0;
 	var normalized = my_softmax(Rinitial);
@@ -119,7 +119,6 @@ function repart_proba(sub_vect, s, e, Num) {
 	console.log('reparted = ', reparted);
 
 	return reparted;
-
 }
 
 function get_min(sub_vect, s, e)
@@ -176,6 +175,30 @@ function repart_mean(sub_vect, s, e, Num) {
 	console.log(repart);
 }
 
+function get_rand_index(soft, rand_float)
+{
+	var prev = soft[0];
+	var next = 0;
+	var i = 1;
+
+	for (i in soft) {
+		next = Number(soft[i]) + prev;
+		if (prev <= rand_float && rand_float <= next)
+			return (i - 1);
+		prev = next;
+		i = Number(i) + 1;
+	}
+	return (-1);
+}
+
+function random_from_probability(vector, s, e, num)
+{
+	var extracted = extract(vector, s, e, num);
+	var soft = my_softmax(extracted);
+	var rand_float = Math.random().toFixed(4);
+	var index = get_rand_index(soft, rand_float);
+}
+
 const nbr_people = 1500;
 
 function make_histo (histogram, start, end, num) {
@@ -188,6 +211,8 @@ function make_histo (histogram, start, end, num) {
 
 	repart = my_repart(sub_vect, start, end, num);
 	console.log('repart = ', repart);
+
+	random_from_probability(repart, start, end, num);
 	return (repart);
 	//repart_mean(sub_vect, start, end, Num);
 }
