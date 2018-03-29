@@ -4,3 +4,5 @@ node_modules
 *.swp
 .*
 Thumbs.db
+CMakeList.txt
+cmake-build-debug

@@ -29,7 +29,8 @@
   var b5 = 0; //bleu
 
 var slider;
-var cars;
+var histogram;
+//var cars;
 //var button;
 
 var congestionMin = 1;
@@ -49,15 +50,16 @@ function setup() {
     console.log('yo');
 
 
-
+    /*
     cars = createSlider(0,100,100);
     cars.position(100, 800);
     cars.style('width', '300px');
+    */
 
 
     slider = createSlider(0, 24, 0, 1);
-    slider.position(100, 1000);
-    slider.style('width', '1750px');
+    slider.position(100, 1040);
+    slider.style('width', '0px');
 
     /*
     ten = createButton('10%');
@@ -77,7 +79,8 @@ function setup() {
     */
 }
 
-function updateColor(histogram, index) {
+function updateColor(_histogram, index) {
+  histogram = _histogram;
   congestion = histogram[index];
   console.log('congestion:',congestion);
 }
@@ -94,11 +97,12 @@ function draw() {
 
   congestionPropagation = congestionPropagationInitial * congestionPropagationFactor;
 
-  var clr = cars.value();
+  //var clr = cars.value();
 
-  fill(255)
-  rect(100, 200-congestion*10, 100, congestion*10);
+  //fill(255)
+  //rect(100, 200-congestion*10, 100, congestion*10);
 
+  /*
   if(clr <= 25){
     r = 0;
     g = 255;
@@ -126,7 +130,7 @@ function draw() {
     g1 = 255;
     b1 = 0;
   }
-
+  */
   //fill(r, g, b);
   //rect(100, 100, 100, 100);
 
@@ -401,7 +405,7 @@ function draw() {
       stroke(100);
       strokeWeight(15);
       strokeCap(SQUARE);
-      line(1400, 589, 1550, 589);
+      line(1396, 589, 1550, 589);
       noFill();
       stroke(100);
       strokeWeight(15);
@@ -481,17 +485,44 @@ function draw() {
       noStroke();
       //stroke(255, 0 , 0);
       //strokeWeight(10);
-      rect(1250, 680, 150, 100);
+      rect(1200, 730, 200, 100);
 
     //cache
       fill(30);
       stroke(255);
       strokeWeight(10);
-      rect(0, 950, 2000, 150);
+      rect(-30, 900, 2000, 350);
 
+  //histogram
+    var lar = windowWidth/25;
+    //var len = histogram.lenght;
+    colorMode(HSB, 360, 100, 100);
+    //rectMode(CORNER);
+    for(var i in histogram) {
+       if (histogram.hasOwnProperty(i)) {
+        noStroke();
+        fill(255);
+        if (i == slider.value()) {
+          fill(min(congestionColor+congestionPropagation, colorGreen), 100, 100);
+        }
+        rect(lar * i, 1080-histogram[i]*15, lar+1, histogram[i]*15);
+       }
+    }
+    colorMode(RGB, 255);
+    //rectMode(CENTER);
 
 
 
 
 
 }
+
+var sliderCurrentIndex = 0;
+
+window.onload = function() {
+  setInterval(function() {
+    sliderCurrentIndex++;
+    if(sliderCurrentIndex == 25) {sliderCurrentIndex = 0}
+    document.getElementsByTagName('input')[0].value = sliderCurrentIndex;
+  }, 200);
+};
