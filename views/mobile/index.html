@@ -43,6 +43,11 @@
             console.log("User connected:",profileId);
             socket.emit('client', profileId);
         });
+
+        socket.on('suggestion',function(v) {
+            $("#suggestedTime").html(v);
+            $("#suggestion").show();
+        });
    </script>
 
 </head>
@@ -100,6 +105,12 @@
           </div>
        </div>
 
+
+        <div id="suggestion" class="bulle" style="display:none">
+            <div id="titre" class="element">
+                <h1> Je vous propose de partir demain à <span id="suggestedTime"></span> </h1>
+            </div>
+        </div>
 <!--
     <div id="soustitre"> <h4> Demain soir </h4> </div>
     <div id="depart" class="element"> <h2> Vous voulez arriver à :</h2> </div>

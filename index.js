@@ -73,7 +73,7 @@ var visu = io.of('/visu');
 //Visu socket listener
 visu.on('connection', function(socket) {
     console.log('someone connected on visu');
-    algo.updateVisu(visu, profile);
+    algo.updateVisu(visu, profile, sockets);
 });
 
 //Declaring mobile socket
@@ -96,7 +96,7 @@ mobile.on('connection', function(socket) {
             var startTimeIndex = time2index(v);
             console.log('client[',clientId,'].start=',v," (",startTimeIndex,")");
             profile[clientId]['start'] = startTimeIndex;
-            algo.updateVisu(visu, profile);
+            algo.updateVisu(visu, profile, sockets);
         }
     });
 
@@ -107,7 +107,7 @@ mobile.on('connection', function(socket) {
             var endTimeIndex = time2index(v);
             console.log('client[',clientId,'].end=',v," (",endTimeIndex,")");
             profile[clientId]['end'] = endTimeIndex;
-            algo.updateVisu(visu, profile);
+            algo.updateVisu(visu, profile, sockets);
         }
     });
 
