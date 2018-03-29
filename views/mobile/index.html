@@ -4,6 +4,7 @@
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
   <link href="assets/css/index.css" type="text/css" rel="stylesheet">
+  <script type="text/javascript" src="libs/jquery-3.3.1.min.js"> </script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script>
@@ -39,19 +40,40 @@
 
     <div class="container">
        <div id="menu" class="element">
-       <div class="burger">
-          <img src="assets/images/menu.png">
-       </div>
-       <div class="profil">
-          <h6> <span id="name"></h6>
-       </div>
-       <div class="logo">
+          <div class="burger">
+             <img src="assets/images/menu.png">
+          </div>
+          <div class="profil">
+             <h6> <span id="name"></h6>
+          </div>
+          <div class="logo">
            <img src="assets/images/logo.png">
+          </div>
        </div>
-    </div>
-    <div id="titre" class="element">
-    	<h1> Votre trajet du jour </h1>
-    </div>
+       <div id="titre" class="element">
+    	   <h1> Votre trajet de demain </h1>
+       </div>
+
+       <div class="calendarpicto">
+         <img src="assets/images/calend.png">
+       </div>
+
+       <div class="calendar">
+         <div class="subtitle">
+           <h5 class="cal"> Calendrier </h5>
+         </div>
+         <div class="grille">
+           <img src="assets/images/lucie_cal.png">
+         </div>
+       </div>
+
+       <script>
+        $(function() {
+          $('.calendarpicto').on('click', function() {
+          $('.calendar').toggleClass('show');
+          });
+        });
+       </script>
 
     <div class="trajet">
       <img class="maison" src="assets/images/maison.png">
@@ -59,7 +81,7 @@
     </div>
 
     <div id="soustitre">
-    	<h4>Ce matin </h4>
+    	<h4>Demain matin </h4>
     </div>
     <div id="depart" class="element">
     	<h2> Vous voulez arriver à :</h2>
@@ -72,7 +94,7 @@
       <input id="arrivalStart" class="timebis" type="time">
       <input id="arrivalEnd" class="timebis" type="time">
     </div>
-    <div id="soustitre"> <h4> Ce soir </h4> </div>
+    <div id="soustitre"> <h4> Demain soir </h4> </div>
     <div id="depart" class="element"> <h2> Vous voulez arriver à :</h2> </div>
     <input class="time" type="time">
     <div id="flexibilite" class="element"> <h3> Vous pouvez arriver entre :</h3> </div>
