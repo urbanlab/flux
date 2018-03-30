@@ -2,6 +2,7 @@
 
 const fs   = require('fs');
 const path = require('path');
+var time_array = ['45', '38', '42'];
 
 function my_softmax (list) {
 	var n = 0;
@@ -298,12 +299,21 @@ module.exports = {
 				if(sockets[clientId]) {
 					var time = getSuggestedTime(clients[clientId], HT, clients[clientId]['start'], clients[clientId]['end']);
                     			sockets[clientId].emit('suggestion', time);
-					sockets[clientId].emit('time-move', getTimeMove(clients[clientId], probabilite, time2index(time)));
+					var minutes = getTimeMove(clients[clientId], probabilite, time2index(time));
+					console.log('client id', clientId);
+					if (clientId == 'villeurbanne')
+						time_array[1] = minutes;
+					else if (clientId == 'lyon7')
+						time_array[0] = minutes;
+					else
+						time_array[2] = minutes;
+					sockets[clientId].emit('time-move', minutes);
 				}
 			}
 		}
 		visu.emit('histogram', scale_histogram(HT,150));
-		visu.emit('times', ['8:00', '8:00', '8:00']);
+		console.log('test === === = == =', time_array);
+		visu.emit('times', time_array);
     },
     scale_histogram: scale_histogram
 }

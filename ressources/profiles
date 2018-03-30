@@ -9,14 +9,14 @@
    "villeurbanne": {
       "from": "109 Rue de Fontanières, 69100 Villeurbanne",
       "time": "45",
-      "name": "Jean-Marie",
+      "name": "Alphonse",
       "count": "500"
    },
-   
+
    "tassin": {
       "from": "11 Avenue Maréchal Foch, 69160 Tassin-la-Demi-Lune",
       "time": "25",
-      "name": "Luc",
+      "name": "Gaby",
       "count": "400"
    }
 }

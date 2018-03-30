@@ -626,6 +626,8 @@ image(img, 0, 0, windowWidth, windowHeight);
 
 
 
+
+
 		//console.log(flashlights);
 
 		for(var h in flux) {
