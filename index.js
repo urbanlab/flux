@@ -29,7 +29,7 @@ function time2index(time) {
     if(res) {
         var hours = res[1];
         var minutes = res[2];
-        var timeIndex = (hours - 6)*4 + minutes / 15;
+        var timeIndex = (hours - 6)*4 + Math.floor(minutes / 15);
         if(timeIndex < 0) {
             timeIndex = 0;
         } else if(timeIndex > 24) {
