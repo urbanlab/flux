@@ -181,7 +181,18 @@ h5:after {
 	background-color: #00c6c1;
 	margin: 20px 0px 50px 80px;
 	border-radius: 20px;
+	position: relative;
 }
+
+.bulle::before{
+	content:"◢";
+	color:#00c6c1;
+	position: absolute;
+	left:-30px;
+	bottom:20px;
+	font-size: 3em;
+}
+
 
 .element {
 	width: 100%;
@@ -193,14 +204,11 @@ h1 {
 	float: left;
 	font-size: 35px;
 	margin: 20px;
+	padding: 10px;
+	line-height: 50px;
 }
 
-.bulle::before{
-	content:"◢";
-	color:#00c6c1;
-	margin-left: -25px;
-	font-size: 3em;
-}
+
 
 /*Deuxième bulle*/
 
@@ -211,8 +219,17 @@ h1 {
 	border-width: 8px;
 	border-radius: 20px;
   margin-left: 140px;
+	position: relative;
 }
 
+.bulle2::after{
+	content:"◣";
+	color:#00c6c1;
+	position: absolute;
+	right:-40px;
+	bottom:20px;
+	font-size: 3em;
+}
 
 #soustitre {
 	height: 100px;
