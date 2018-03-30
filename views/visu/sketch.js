@@ -21,9 +21,9 @@ var congestion = 1;
 
 var flashlights = new Array();
 var flashlightsDensity = 1;
-var flashlightsFramesCountMax = 15;
+var flashlightsFramesCountMax = 2;
 var flashlightsFramesCount = 0;
-var flashlightsSlowFramesCountMax = 5;
+var flashlightsSlowFramesCountMax = 1;
 var flashlightsSlowFramesCount = 0;
 var flashlightsSlowIndex = 43;
 
@@ -74,10 +74,23 @@ function setup() {
 function updateColor(_histogram, index) {
   histogram = _histogram;
   congestion = histogram[index];
+  congestionAnticipationIndex = index + 3;
 
-	flashlightsDensity = int(map(congestion, 1, 13, 2000, 500));
+	if (congestionAnticipationIndex > histogram.length) {
+		congestionAnticipationIndex = congestionAnticipationIndex - histogram.length;
+	}
+
+
+
+	flashlightsDensity = int(map(histogram[congestionAnticipationIndex], 1, 13, 2000, 50));
 
   console.log('congestion:',congestion);
+}
+
+function updateTrajet(_trajet, index) {
+	trajet = _trajet;
+	heure = trajet[index];
+	console.log('heure', heure);
 }
 
 function draw() {
@@ -86,6 +99,7 @@ function draw() {
 
   colorMode(RGB, 360);
 
+	updateTrajet(trajet);
   updateColor(histogram, slider.value());
   var congestionColor = int(map(congestion, congestionMin, congestionMax, colorGreen, colorRed));
   congestionPropagationFactor = map(congestion, congestionMin, congestionMax, 1, 0);
@@ -593,20 +607,24 @@ image(img, 0, 0, windowWidth, windowHeight);
 		textFont(MontserratBold);
 		textSize(30);
 		textAlign(CORNERS);
+		fill(255);
+		rect(50, 250, 420, 360);
+		rect(350, 600, 100, 80);
 		fill(0);
 		text('Heure d\'arrivée estimée', 50, 350);
-		fill(255);
-		rect(50, 380, 420, 500);
 		textFont(Montserrat);
 		textSize(30);
 		textAlign(CORNERS);
 		fill(0);
 		text('Lucie :', 50, 400);
-		//text('Lucie', 50, 400);
-		text('Jean-Marie :', 50, 460);
-		//text('Lucie', 50, 400);
-		text('Luc :', 50, 520);
-		//text('Lucie', 50, 400);
+		text('min', 370, 400);
+		text(+trajet[0], 250, 400);
+		text('Alphonse :', 50, 460);
+		text('min', 370, 460);
+		text(+trajet[1], 250, 460);
+		text('Gaby :', 50, 520);
+		text('min', 370, 520);
+		text(+trajet[2], 250, 520);
 
 
 
@@ -646,7 +664,7 @@ window.onload = function() {
     sliderCurrentIndex++;
     if(sliderCurrentIndex == 25) {sliderCurrentIndex = 0}
     document.getElementsByTagName('input')[0].value = sliderCurrentIndex;
-  },2500);
+  },3000);
 	createLight();
 };
 
