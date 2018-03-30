@@ -21,12 +21,13 @@ var congestion = 1;
 
 var flashlights = new Array();
 var flashlightsDensity = 1;
-var flashlightsFramesCountMax = 15;
+var flashlightsFramesCountMax = 2;
 var flashlightsFramesCount = 0;
-var flashlightsSlowFramesCountMax = 5;
+var flashlightsSlowFramesCountMax = 1;
 var flashlightsSlowFramesCount = 0;
 var flashlightsSlowIndex = 43;
 
+var xt = 2000;
 function preload() {
   Montserrat = loadFont('/assets-visu/assets/Montserrat-Regular.ttf');
   MontserratBold = loadFont('/assets-visu/assets/Montserrat-Bold.ttf');
@@ -38,7 +39,8 @@ function setup() {
   tree = loadImage("/assets-visu/assets/arbre.png");
 	autoroute = loadImage("/assets-visu/assets/a6.png");
 	histogrey = loadImage("/assets-visu/assets/histogrey.png");
-	tram = loadImage("/assets-visu/assets/tram.png")
+	tram = loadImage("/assets-visu/assets/tram.png");
+	tunnel = loadImage("/assets-visu/assets/tunnel.png");
     console.log('yo');
 
     /*
@@ -74,10 +76,23 @@ function setup() {
 function updateColor(_histogram, index) {
   histogram = _histogram;
   congestion = histogram[index];
+  congestionAnticipationIndex = index + 4;
 
-	flashlightsDensity = int(map(congestion, 1, 13, 2000, 500));
+	if (congestionAnticipationIndex > histogram.length) {
+		congestionAnticipationIndex = congestionAnticipationIndex - histogram.length;
+	}
+
+
+
+	flashlightsDensity = int(map(histogram[congestionAnticipationIndex], 1, 13, 2000, 50));
 
   console.log('congestion:',congestion);
+}
+
+function updateTrajet(_trajet, index) {
+	trajet = _trajet;
+	heure = trajet[index];
+	console.log('heure', heure);
 }
 
 function draw() {
@@ -86,6 +101,7 @@ function draw() {
 
   colorMode(RGB, 360);
 
+	updateTrajet(trajet);
   updateColor(histogram, slider.value());
   var congestionColor = int(map(congestion, congestionMin, congestionMax, colorGreen, colorRed));
   congestionPropagationFactor = map(congestion, congestionMin, congestionMax, 1, 0);
@@ -374,16 +390,8 @@ image(img, 0, 0, windowWidth, windowHeight);
         line(1560, 965, 1730, 965);
 
     //Relie route est avec route entreprise
-      noFill();
-      stroke(230);
-      strokeWeight(15);
-      strokeCap(SQUARE);
-      arc(1375, 785, 130, 130, 0, HALF_PI);
-      noFill();
-      stroke(230);
-      strokeWeight(15);
-      strokeCap(SQUARE);
-      line(1440, 425, 1440, 790);
+
+
       noFill();
       stroke(230);
       strokeWeight(15);
@@ -533,20 +541,7 @@ image(img, 0, 0, windowWidth, windowHeight);
         rect(lar * i, 1080-histogram[i]*12, lar+1, histogram[i]*12);
        }
     }
-    for(var j in time) {
-       if (time.hasOwnProperty(j)) {
-        textSize(140);
-        textFont(MontserratBold);
-        textAlign(CORNER);
-        noStroke();
-        fill(255, 255, 255, 0)
-        if (j == slider.value()){
-          fill(0);
-        }
-        text(time[j], 40, 200);
-       }
 
-    }
     colorMode(RGB, 255);
 		ellipseMode(CENTER);
 
@@ -591,22 +586,43 @@ image(img, 0, 0, windowWidth, windowHeight);
 		}
 
 		textFont(MontserratBold);
+
+		fill(30);
+		//rect(50, 250, 420, 360);
+		rect(0, 0, 485, 900);
+
+
+		for(var j in time) {
+			 if (time.hasOwnProperty(j)) {
+				textSize(140);
+				textFont(MontserratBold);
+				textAlign(CORNER);
+				noStroke();
+				fill(255, 255, 255, 0)
+				if (j == slider.value()){
+					fill(255);
+				}
+				text(time[j], 40, 200);
+			 }
+
+		}
 		textSize(30);
 		textAlign(CORNERS);
-		fill(0);
-		text('Heure d\'arrivée estimée', 50, 350);
-		fill(255);
-		rect(50, 380, 420, 500);
+				fill(255);
+		text('Temps de trajet estimé', 50, 350);
 		textFont(Montserrat);
 		textSize(30);
 		textAlign(CORNERS);
-		fill(0);
+		fill(255);
 		text('Lucie :', 50, 400);
-		//text('Lucie', 50, 400);
-		text('Jean-Marie :', 50, 460);
-		//text('Lucie', 50, 400);
-		text('Luc :', 50, 520);
-		//text('Lucie', 50, 400);
+		text('min', 370, 400);
+		text(+trajet[0], 250, 400);
+		text('Alphonse :', 50, 460);
+		text('min', 370, 460);
+		text(+trajet[1], 250, 460);
+		text('Gaby :', 50, 520);
+		text('min', 370, 520);
+		text(+trajet[2], 250, 520);
 
 
 
@@ -631,9 +647,33 @@ image(img, 0, 0, windowWidth, windowHeight);
 
 		image(autoroute, 510, 300, windowWidth/24, windowHeight/24);
 
+		if (xt > 1439){
+		 	xt = xt - 10;
+		} else{
+			xt = 2000;
+		}
 
-    //rectMode(CENTER);
+			image(tram, xt, 790, 100, 50);
 
+		image(tunnel, 1570, 780, 60, 60);
+		noStroke();
+		fill(255);
+		rect(1420, 750, 115, 150);
+		rect(1560, 780, 50, 100);
+		fill(165);
+		rect(1535, 700, 30, 200);
+				    //rectMode(CENTER);
+
+		noFill();
+		stroke(165);
+		strokeWeight(15);
+		strokeCap(SQUARE);
+		arc(1375, 785, 130, 130, 0, HALF_PI);
+		noFill();
+		stroke(165);
+		strokeWeight(15);
+		strokeCap(SQUARE);
+		line(1440, 425, 1440, 790);
 
 
 
