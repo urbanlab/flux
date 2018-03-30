@@ -21,9 +21,9 @@ var congestion = 1;
 
 var flashlights = new Array();
 var flashlightsDensity = 1;
-var flashlightsFramesCountMax = 15;
+var flashlightsFramesCountMax = 2;
 var flashlightsFramesCount = 0;
-var flashlightsSlowFramesCountMax = 5;
+var flashlightsSlowFramesCountMax = 1;
 var flashlightsSlowFramesCount = 0;
 var flashlightsSlowIndex = 43;
 
@@ -74,8 +74,15 @@ function setup() {
 function updateColor(_histogram, index) {
   histogram = _histogram;
   congestion = histogram[index];
+  congestionAnticipationIndex = index + 3;
 
-	flashlightsDensity = int(map(congestion, 1, 13, 2000, 500));
+	if (congestionAnticipationIndex > histogram.length) {
+		congestionAnticipationIndex = congestionAnticipationIndex - histogram.length;
+	}
+
+
+
+	flashlightsDensity = int(map(histogram[congestionAnticipationIndex], 1, 13, 2000, 50));
 
   console.log('congestion:',congestion);
 }
@@ -603,17 +610,17 @@ image(img, 0, 0, windowWidth, windowHeight);
 		fill(0);
 		text('Heure d\'arrivée estimée', 50, 350);
 		fill(255);
-		rect(50, 380, 420, 500);
+		rect(50, 250, 420, 600);
 		textFont(Montserrat);
 		textSize(30);
 		textAlign(CORNERS);
 		fill(0);
 		text('Lucie :', 50, 400);
-		//text('Lucie', 50, 400);
-		text('Jean-Marie :', 50, 460);
-		//text('Lucie', 50, 400);
-		text('Luc :', 50, 520);
-		//text('Lucie', 50, 400);
+		text('min', 300, 400);
+		text('Alphonse :', 50, 460);
+		text('min', 300, 460);
+		text('Gaby :', 50, 520);
+		text('min', 300, 520);
 
 
 
