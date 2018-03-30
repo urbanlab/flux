@@ -607,20 +607,24 @@ image(img, 0, 0, windowWidth, windowHeight);
 		textFont(MontserratBold);
 		textSize(30);
 		textAlign(CORNERS);
+		fill(255);
+		rect(50, 250, 420, 360);
+		rect(350, 600, 100, 80);
 		fill(0);
 		text('Heure d\'arrivée estimée', 50, 350);
-		fill(255);
-		rect(50, 250, 420, 600);
 		textFont(Montserrat);
 		textSize(30);
 		textAlign(CORNERS);
 		fill(0);
 		text('Lucie :', 50, 400);
-		text('min', 300, 400);
+		text('min', 370, 400);
+		text(+trajet[0], 250, 400);
 		text('Alphonse :', 50, 460);
-		text('min', 300, 460);
+		text('min', 370, 460);
+		text(+trajet[1], 250, 460);
 		text('Gaby :', 50, 520);
-		text('min', 300, 520);
+		text('min', 370, 520);
+		text(+trajet[2], 250, 520);
 
 
 
@@ -660,7 +664,7 @@ window.onload = function() {
     sliderCurrentIndex++;
     if(sliderCurrentIndex == 25) {sliderCurrentIndex = 0}
     document.getElementsByTagName('input')[0].value = sliderCurrentIndex;
-  },2500);
+  },3000);
 	createLight();
 };
 
