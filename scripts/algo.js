@@ -238,7 +238,7 @@ function getRandIndex(softab) {
 	var rando = Math.random();
 	var prev  = softab[0];
 	var next  = softab[1] + prev;
-	
+
 	for (var i = 0 in softab) {
 		if (prev <= rando && rando <= next) {
 			break;
@@ -247,7 +247,7 @@ function getRandIndex(softab) {
 			next = softab[i] + prev;
 		}
 	}
-	
+
 }
 
 function time2index(time) {
@@ -303,6 +303,7 @@ module.exports = {
 			}
 		}
 		visu.emit('histogram', scale_histogram(HT,150));
+		visu.emit('times', ['8:00', '8:00', '8:00']);
     },
     scale_histogram: scale_histogram
 }

@@ -76,7 +76,7 @@ function setup() {
 function updateColor(_histogram, index) {
   histogram = _histogram;
   congestion = histogram[index];
-  congestionAnticipationIndex = index + 4;
+  congestionAnticipationIndex = index + 5;
 
 	if (congestionAnticipationIndex > histogram.length) {
 		congestionAnticipationIndex = congestionAnticipationIndex - histogram.length;
@@ -86,13 +86,13 @@ function updateColor(_histogram, index) {
 
 	flashlightsDensity = int(map(histogram[congestionAnticipationIndex], 1, 13, 2000, 50));
 
-  console.log('congestion:',congestion);
+  //console.log('congestion:',congestion);
 }
 
 function updateTrajet(_trajet, index) {
 	trajet = _trajet;
 	heure = trajet[index];
-	console.log('heure', heure);
+	//console.log('heure', heure);
 }
 
 function draw() {
@@ -616,17 +616,17 @@ image(img, 0, 0, windowWidth, windowHeight);
 		fill(255);
 		text('Lucie :', 50, 400);
 		text('min', 370, 400);
-		text(+trajet[0], 250, 400);
+		text(trajet[0], 250, 400);
 		text('Alphonse :', 50, 460);
 		text('min', 370, 460);
-		text(+trajet[1], 250, 460);
+		text(trajet[1], 250, 460);
 		text('Gaby :', 50, 520);
 		text('min', 370, 520);
-		text(+trajet[2], 250, 520);
+		text(trajet[2], 250, 520);
 
 
 
-		console.log(flashlights);
+		//console.log(flashlights);
 
 		for(var h in flux) {
        if (flux.hasOwnProperty(h)) {
