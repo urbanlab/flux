@@ -42,6 +42,7 @@ function time2index(time) {
 }
 
 prob_array = algo.scale_histogram(get_prob_array('./ressources/prob_file.json'), totalPeople);
+probabilite = get_prob_array('./ressources/prob_file.json');
 console.log("Scaled traffic: ", prob_array);
 
 //Root listener

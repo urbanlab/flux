@@ -227,12 +227,65 @@ function scale_histogram(hist, n) {
 }
 
 function index2hour(index) {
-	hour = index / 4;
-	minutes = (index % 4) * 15;
+	hour = Math.floor((index / 4) + 6);
+	minutes = Math.floor(index % 4) * 15;
+	if (minutes < 10)
+		minutes = '0' + minutes;
 	return (hour + ':' + minutes);
 }
 
+function getRandIndex(softab) {
+	var rando = Math.random();
+	var prev  = softab[0];
+	var next  = softab[1] + prev;
+	
+	for (var i = 0 in softab) {
+		if (prev <= rando && rando <= next) {
+			break;
+		} else {
+			prev = next;
+			next = softab[i] + prev;
+		}
+	}
+	
+}
 
+function time2index(time) {
+    var res = /([0-9]{1,2}):([0-9]{2})/.exec(time);
+    if(res) {
+        var hours = res[1];
+        var minutes = res[2];
+        var timeIndex = (hours - 6) * 4 + Math.ceil(minutes / 15);
+        if(timeIndex < 0) {
+            timeIndex = 0;
+        } else if(timeIndex > 24) {
+            timeIndex = 24;
+        }
+        return timeIndex;
+    } else {
+        return undefined;
+    }
+}
+function getSuggestedTime(client, histo, start, end)
+{
+	console.log(start);
+	console.log(end);
+	if (end != start)
+		rando = Math.floor((Math.random() * 10000000)) % (end - start) + start;
+	else
+		rando = end;
+	console.log('Rando = ', rando);
+	return (index2hour(rando));
+}
+
+
+function getTimeMove(client, histo, index)
+{
+	console.log('client time = ', client.time);
+	console.log('histo time = ', histo[index]);
+	var value = Math.ceil(Number(client.time) + Number(histo[index]) * 0.8);
+	return (value);
+}
 
 module.exports = {
     updateVisu: function (visu, clients, sockets) {
@@ -243,8 +296,9 @@ module.exports = {
 			if (!(clients[clientId]['start'] === undefined) && !(clients[clientId]['end'] === undefined)) {
 				HT = make_histo(HT, clients[clientId]['start'], clients[clientId]['end'], Number(clients[clientId]['count']));
 				if(sockets[clientId]) {
-                    			sockets[clientId].emit('suggestion', '7:00');
-					sockets[clientId].emit('time-move', '25');
+					var time = getSuggestedTime(clients[clientId], HT, clients[clientId]['start'], clients[clientId]['end']);
+                    			sockets[clientId].emit('suggestion', time);
+					sockets[clientId].emit('time-move', getTimeMove(clients[clientId], probabilite, time2index(time)));
 				}
 			}
 		}
