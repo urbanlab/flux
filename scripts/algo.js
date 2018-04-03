@@ -1,9 +1,16 @@
 //Javascript file for sorting functions
+/* Ce fichier contient toute les fonction de l'algorithme
+ * qui calcule les nouvelles repartitions de l'histogramme*/
+
+
 
 const fs   = require('fs');
 const path = require('path');
 var time_array = ['45', '38', '42'];
 
+
+/* La fonction softmax transforme un histogramme dont la somme vaut N en un histogramme dont la somme vaut 1 
+ * (autrement dit il transforme les proportions de l'histogramme en probabilités)*/
 function my_softmax (list) {
 	var n = 0;
 	var e = 0;
@@ -28,6 +35,8 @@ function my_softmax (list) {
 	return (soft);
 }
 
+/* cette fontion permet de calculer un vecteur de probabilités inverse par rapport aux probabilité se l'histogramme entré
+ * La somme du vecteur entré doit etre 1 */
 function reverse_vector (vector) {
 	var n = 0;
 	var rev = [];
@@ -38,12 +47,16 @@ function reverse_vector (vector) {
 	return (rev);
 }
 
+/* cette fonction permet d'inverser les probababilité d'un vecteur dont la somme des elements vaut N */
 function reverse_proba (vector) {
 	var vec = my_softmax(vector);
 	vec = reverse_vector(vec);
 	return vec;
 }
 
+
+/* cette fonction inverse les probabilités d'un vecteur entre 's' (qui est l'index de depart) et 'e' (qui est l'index de fin) 
+ * (la fonction retourne les probabilité inverse sur la tranche 's - e' et 0 sur les autres element du vecteur )*/
 function reverse_proba_special(vector, s, e) {
 	var vec = my_softmax(vector);
 	var n = 0;
@@ -59,6 +72,9 @@ function reverse_proba_special(vector, s, e) {
 	return (rev);
 }
 
+
+/* Cette fonction modifie le coef Num en le divisant par la somme des elements entre 's' et 'e' sur le vecteur Rinitial 
+ * fonction utilisé dans extract */
 function get_coef(Rinitial, s, e, Num) {
 	var i = 0;
 	var sum = 0;
@@ -74,6 +90,10 @@ function get_coef(Rinitial, s, e, Num) {
 		return (0);
 }
 
+
+/* La fonction extract renvoie un vecteur de la meme taille que l'histogramme, contenant un nombre 'Num'
+ * de personne, repartie selon les proportions de l'histogramme entre 's' et 'e' (sur le vecteur de sortie)
+ * (Les autres membres du vecteur de sortie sont a 0) */
 function extract(Rinitial, s, e, Num)
 {
 	var i = 0;
@@ -91,6 +111,7 @@ function extract(Rinitial, s, e, Num)
 	return extract_vect;
 }
 
+/* cette fonction soustrait extract à Rinitial */
 function sub_extract(Rinitial, extract) {
 	var i = 0;
 	var sub_vect = [];
@@ -100,6 +121,7 @@ function sub_extract(Rinitial, extract) {
 	return sub_vect;
 }
 
+/* cette fonction ajoute un vecteur new_extract a sub_vect */
 function push_extract(sub_vect, new_extract) {
 	var i = 0;
 	var add_vect = [];
@@ -109,6 +131,8 @@ function push_extract(sub_vect, new_extract) {
 	return add_vect;
 }
 
+/* Cette fonction repartie selon les proportion de sub_vect, un nombre de personne 'Num' entre les indexs 's' et 'e' 
+ * assemblement de (reverse_proba_special, extract, push_extract)*/
 function repart_proba(sub_vect, s, e, Num) {
     reverse = reverse_proba_special(sub_vect, s, e);
 	console.log('reverse = ', reverse);
@@ -122,6 +146,7 @@ function repart_proba(sub_vect, s, e, Num) {
 	return reparted;
 }
 
+/* obtient l'index du nombre minimum entre les indexs 's' et 'e' sur un vecteur */
 function get_min(sub_vect, s, e)
 {
 	var min = s;
@@ -133,6 +158,9 @@ function get_min(sub_vect, s, e)
 	return (min);
 }
 
+/* Fonction concurente et bien plus performante que repart_proba qui repartie chaque personne
+ * en fonction du minimum sur la tranche 's - e' a chaque tour 
+ * (il pose 300 personne en obtimisant au maximum la route sur la tranche horaire ciblée) */
 function my_repart(sub_vect, s, e , num)
 {
 	var i = 0;
@@ -145,63 +173,9 @@ function my_repart(sub_vect, s, e , num)
 	return (sub_vect);
 }
 
-function repart_mean(sub_vect, s, e, Num) {
-	var sum = 0;
-	var little_sum = 0;
-	var mean = 0;
-	var nb_little = 0;
-	var little_mean = 0;
-	var repart = [];
-
-	for (var i = s; i <= e; i++)
-		sum += Number(sub_vect[i]);
-	if ((e - s) != 0)
-		mean = (sum + Num) / (e - s);
-	for (var i = s; i <=e; i++) {
-		if (Number(sub_vect[i]) <= Number(mean)) {
-			little_sum += Number(sub_vect[i]);
-			nb_little++;
-		}
-	}
-	if (nb_little != 0)
-		little_mean = Number(little_sum + 300) / Number(nb_little);
-	for (var i in sub_vect)  {
-		if (sub_vect[i] <= Number(mean))
-			repart[i] = Number(little_sum) - Number(sub_vect[i]);
-		else
-			repart[i] = 0;
-	}
-	console.log('MEAN = ', mean);
-	console.log('LITTLE = ', little_mean);
-	console.log(repart);
-}
-
-function get_rand_index(soft, rand_float)
-{
-	var prev = soft[0];
-	var next = 0;
-	var i = 1;
-
-	for (i in soft) {
-		next = Number(soft[i]) + prev;
-		if (prev <= rand_float && rand_float <= next)
-			return (i - 1);
-		prev = next;
-		i = Number(i) + 1;
-	}
-	return (-1);
-}
-
-function random_from_probability(vector, s, e, num)
-{
-	var extracted = extract(vector, s, e, num);
-	var soft = my_softmax(extracted);
-	var rand_float = Math.random().toFixed(4);
-	return get_rand_index(soft, rand_float);
-}
-
 const nbr_people = 1500;
 
+/* cette fonction construit un histogramme (assmblage de extract, sub_extract et my_repart)*/
 function make_histo (histogram, start, end, num) {
     console.log("Updating histogram start=",start," end=",end, "num=",num);
 	extract_vect = extract(histogram, start, end, num);
@@ -214,9 +188,10 @@ function make_histo (histogram, start, end, num) {
 	console.log('repart = ', repart);
 
 	return (repart);
-	//repart_mean(sub_vect, start, end, Num);
 }
 
+/* La fonction scale_histogram transforme un vecteur dont la somme des elements vaut N
+ * en un vecteur dont la somme des elements vaut n */
 function scale_histogram(hist, n) {
     var pHist = my_softmax(hist);
     console.log(n);
@@ -227,6 +202,7 @@ function scale_histogram(hist, n) {
     return rHist;
 }
 
+/* fonction inverse a time2index */
 function index2hour(index) {
 	hour = Math.floor((index / 4) + 6);
 	minutes = Math.floor(index % 4) * 15;
@@ -235,6 +211,8 @@ function index2hour(index) {
 	return (hour + ':' + minutes);
 }
 
+
+/* obtenir un index random */
 function getRandIndex(softab) {
 	var rando = Math.random();
 	var prev  = softab[0];
@@ -250,7 +228,7 @@ function getRandIndex(softab) {
 	}
 
 }
-
+/* commentée dans index.js */
 function time2index(time) {
     var res = /([0-9]{1,2}):([0-9]{2})/.exec(time);
     if(res) {
@@ -267,6 +245,8 @@ function time2index(time) {
         return undefined;
     }
 }
+
+/* cette fonction renvoie une heure aleatoire sous la forme 'xx:xx' entre les index 'start' et 'end' */
 function getSuggestedTime(client, histo, start, end)
 {
 	console.log(start);
@@ -279,7 +259,7 @@ function getSuggestedTime(client, histo, start, end)
 	return (index2hour(rando));
 }
 
-
+/* cette fonction calcule le temps de trajets de chaque personne en fonction de sont heure de depart */
 function getTimeMove(client, histo, index)
 {
 	console.log('client time = ', client.time);
@@ -288,6 +268,9 @@ function getTimeMove(client, histo, index)
 	return (value);
 }
 
+/* La fonction updateVisu permet de mettre a jour la visualisation,
+ * elle envoie a la visu des info l'histogramme et les heures de depart des trois personnages
+ * et envois a chacun des personnages ses heures de trajets et de depart */
 module.exports = {
     updateVisu: function (visu, clients, sockets) {
         console.log("Updating repartition: ", clients);
@@ -298,7 +281,7 @@ module.exports = {
 				HT = make_histo(HT, clients[clientId]['start'], clients[clientId]['end'], Number(clients[clientId]['count']));
 				if(sockets[clientId]) {
 					var time = getSuggestedTime(clients[clientId], HT, clients[clientId]['start'], clients[clientId]['end']);
-                    			sockets[clientId].emit('suggestion', time);
+                    			sockets[clientId].emit('suggestion', time); //envois au client son heure de depart suggeré
 					var minutes = getTimeMove(clients[clientId], probabilite, time2index(time));
 					console.log('client id', clientId);
 					if (clientId == 'villeurbanne')
@@ -307,13 +290,13 @@ module.exports = {
 						time_array[0] = minutes;
 					else
 						time_array[2] = minutes;
-					sockets[clientId].emit('time-move', minutes);
+					sockets[clientId].emit('time-move', minutes); //envois au client son temps de trajets
 				}
 			}
 		}
-		visu.emit('histogram', scale_histogram(HT,150));
+		visu.emit('histogram', scale_histogram(HT,150)); //envois le nouvel histogramme a la visu
 		console.log('test === === = == =', time_array);
-		visu.emit('times', time_array);
+		visu.emit('times', time_array); //envois time_array a la visu (time_array est un tableau de trois valeurs)
     },
     scale_histogram: scale_histogram
 }
