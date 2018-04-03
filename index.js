@@ -10,20 +10,29 @@ const fs  = require('fs');
 
 
 var taux = 20;
-var clients = {};
-var profile = JSON.parse(fs.readFileSync('./ressources/profiles', {encoding: 'utf-8'}));
-var sockets = {};
-var histogram = [4, 4, 4, 4, 5, 6, 6, 7, 8, 8, 9, 9, 9, 10, 5, 6, 6, 7, 2, 1, 3];
+var clients = {}; //liste de clients
+var profile = JSON.parse(fs.readFileSync('./ressources/profiles', {encoding: 'utf-8'})); //Le fichier ./ressources/profiles contient un fichier JSON, qui initialise profile
+var sockets = {}; //liste de sockets
+var histogram = [4, 4, 4, 4, 5, 6, 6, 7, 8, 8, 9, 9, 9, 10, 5, 6, 6, 7, 2, 1, 3]; //cet histogramme n'est plus utilisé mais servait de test, il peut etre supprimé
 
 
-var totalPeople = 5000;
+var totalPeople = 5000; //Cette variable contient le nombre total de personne
 
+
+/* La fonction get_prob_array permet d'ouvrir un histogramme
+ * des temps de trajets au cours du temps sur la portion de route étudiée */
 function get_prob_array(path_to_file) {
-	file = fs.readFileSync(path_to_file, {encoding: 'utf-8'});
-	ret = JSON.parse(file);
+	file = fs.readFileSync(path_to_file, {encoding: 'utf-8'}); //lecture du fichier
+	ret = JSON.parse(file); //parsing JSON
 	return (ret);
 };
 
+
+/* la fonction time2index transforme une heure
+ * de type xx:xx en sont index dans un histogram compris entre 0-24
+ * (12 heures par tranches de 15 minutes)
+ * (Une heure qui n'est pas ecrit par tranches de 15 min
+ * sera reduit a la tranche inférieure : exemple : 9h34 -> 9h30 -> index=14) */
 function time2index(time) {
     var res = /([0-9]{1,2}):([0-9]{2})/.exec(time);
     if(res) {
@@ -41,8 +50,10 @@ function time2index(time) {
     }
 }
 
+/* La fonction scale_histogram transforme un histogram dont la somme vaut N en un histogram dont la somme vaut TotalPeople,
+ * on repartie donc notre population de 5000 personnes selon les proportions definie par prob_array (histogramme des durées) */
 prob_array = algo.scale_histogram(get_prob_array('./ressources/prob_file.json'), totalPeople);
-probabilite = get_prob_array('./ressources/prob_file.json');
+probabilite = get_prob_array('./ressources/prob_file.json'); //ouverture de l'histogramme des temps de trajets avec get_prob_array
 console.log("Scaled traffic: ", prob_array);
 
 //Root listener
