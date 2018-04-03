@@ -175,7 +175,7 @@ function my_repart(sub_vect, s, e , num)
 
 const nbr_people = 1500;
 
-/* cette fonction construit un histogramme (assmblage de extract, sub_extract et my_repart)*/
+/* cette fonction construit un histogramme (assmblage de extract(), sub_extract() et my_repart())*/
 function make_histo (histogram, start, end, num) {
     console.log("Updating histogram start=",start," end=",end, "num=",num);
 	extract_vect = extract(histogram, start, end, num);
@@ -212,22 +212,6 @@ function index2hour(index) {
 }
 
 
-/* obtenir un index random */
-function getRandIndex(softab) {
-	var rando = Math.random();
-	var prev  = softab[0];
-	var next  = softab[1] + prev;
-
-	for (var i = 0 in softab) {
-		if (prev <= rando && rando <= next) {
-			break;
-		} else {
-			prev = next;
-			next = softab[i] + prev;
-		}
-	}
-
-}
 /* commentée dans index.js */
 function time2index(time) {
     var res = /([0-9]{1,2}):([0-9]{2})/.exec(time);
