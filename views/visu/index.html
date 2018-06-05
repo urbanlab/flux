@@ -14,6 +14,7 @@
 	var trajet = [];
 
 	socket.on('histogram', function (data) {
+		alert(data);
 		histogram = data;
 		console.log('histo: ',data);
 	});
