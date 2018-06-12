@@ -65,6 +65,23 @@ h6 {
 	margin: 80px 0px 0px 0px;
 }
 
+/*
+select {
+	display: flex;
+	float: right;
+	margin: 80px 0px 0px 0px;
+	height: 100px;
+	width: 300px;
+	font-family: "Montserrat";
+	font-weight: 700;
+	font-size: 100px;
+	color: #00c6c1;
+	margin: auto;
+	border-style: none;
+	text-align: center;
+}
+*/
+
 .maison {
 	width: 40px;
 	height: 40px;

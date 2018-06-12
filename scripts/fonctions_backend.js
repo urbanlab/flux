@@ -1,7 +1,18 @@
-var pas_temporel = '00:15';
-var PD = require("probability-distributions");
+/*---------------------------------------------------------------------------------------*/
+//Paramètres de la démo
+/*---------------------------------------------------------------------------------------*/
 
-var distribution_probas = {
+const heure_min = '06:00';      // heure d'arrivée minimum pour la démo 
+const heure_max = '12:00';      // heure d'arrivée maximum pour la démo
+const pas_temporel = '00:15';   // pas de temps discret utilisé par la démo.
+const pas_temps_visu = '00:15'; // pas de temps de l'histogramme affiché à l'écran
+
+const horaires = generer_horaires(heure_min, heure_max, pas_temporel);         // temps discrétisé pour les calculs
+const horaires_visu = generer_horaires(heure_min, heure_max, pas_temps_visu);  // temps discrétisé pour l'affichage.
+
+const PD = require("probability-distributions"); // librairie pour calculer des distributions de probabilités.
+
+const distribution_probas = {                    // distribution des arrivées d'un groupe de personnes sur une plage de temps
 	'-00:30':0.01,
 	'-00:15':0.35,
 	'+00:00':0.45,
@@ -9,12 +20,23 @@ var distribution_probas = {
 	'+00:30':0.04
 };
 
+const mini = 2;                            // paramètres d'affichage (taille de l'histogramme verticalement)
+const maxi = 35;
+const niveau_bruit_affichage = 0.5;        // paramètres d'affichage (ajout d'un "bruit" car tout
+                                           // le monde ne se sert pas de l'application)
+
+/*---------------------------------------------------------------------------------------*/
+// Fonctions de gestion des horaires
+/*---------------------------------------------------------------------------------------*/
+
 function horaire_en_minutes(horaire) {
+	// Traduit un horaire (format'hh:mm') en une valeur en minutes (int)
 	var heures_et_minutes = horaire.split(':');
 	return eval(heures_et_minutes[0]) * 60 + eval(heures_et_minutes[1]);
 };
 
 function minutes_en_horaire(minutes) {
+	// Traduit une valeur en minutes(int) en un horaire (format 'hh:mm')
 	var horaire = [Math.floor(minutes / 60), minutes % 60];
 	var string_heures = (horaire[0] >= 10) ? String(horaire[0]) : '0' + String(horaire[0]);
 	var string_minutes = (horaire[1] >= 10) ? String(horaire[1]) : '0' + String(horaire[1]);
@@ -22,6 +44,7 @@ function minutes_en_horaire(minutes) {
 };
 
 function ajouter_horaires(h1, h2, signe) {
+	// Calcule h1 + h2, ou h1 - h2 si signe = '-'. Les entrées et la sortie sont au format 'hh:mm'.
 	var h1_minutes = horaire_en_minutes(h1);
 	var h2_minutes = horaire_en_minutes(h2);
 	var resultat_minutes = (signe == '-') ? (h1_minutes - h2_minutes) : (h1_minutes + h2_minutes);
@@ -29,8 +52,9 @@ function ajouter_horaires(h1, h2, signe) {
 };
 
 
-// A utiliser 1 fois au début de l'algorithme
-function generer_horaires(heure_min, heure_max, pas_temps=pas_temporel) {
+function generer_horaires(heure_min, heure_max, pas_temps) {
+	// Génère, le tableau [heure_min, heure_min + pas_temps, heure_min + 2*pas_temps, ..., heure_max].
+	// Les horaires en entrée et en sortie sont au format 'hh:mm'
 	var minutes_min = horaire_en_minutes(heure_min);
 	var minutes_max = horaire_en_minutes(heure_max);
 	var pas_temporel = horaire_en_minutes(pas_temps);
@@ -46,6 +70,10 @@ function generer_horaires(heure_min, heure_max, pas_temps=pas_temporel) {
 };
 
 function calculer_plage_groupe(date_reference, liste_deltaT) {
+	// Pour un groupe de personnes, les individus peuvent arriver à plusieurs horaires
+	// autours de la date de référence: date_reference - k*deltaT, ..., date_reference + k*deltaT.
+	// A partir de la date de référence et de la liste des deltaT, calcule la plage d'arrivées
+	// possibles pour un individu. 
 	var taille_plage = liste_deltaT.length;
 	var plage = new Array(taille_plage);
 	for(var i = 0; i < taille_plage; i++) {
@@ -58,7 +86,11 @@ function calculer_plage_groupe(date_reference, liste_deltaT) {
 
 // Attention il faudra éviter les effets de bord: les horaires proposés sont à +/-30min des
 // bords de l'histogramme
-function repartir_utilisateurs(date_reference, taille_groupe, distribution_probabilites=distribution_probas) {
+function repartir_utilisateurs(date_reference, taille_groupe, distribution_probabilites) {
+	// Pour un groupe de personnes, chaque individu a une certaine probabilité d'arriver avant
+	// ou après l'heure prévue. A partir de la date de référence, du nombre d'individus au sein
+	// du groupe et de la distribution de probabilités {deltaT:chance d'arriver avec un décalage deltaT},
+	// calcule la répartition moyenne des dates d'arrivée du groupe d'individus.
 	var repartition = {};
 	var liste_deltaT = Object.keys(distribution_probabilites);
 	var plage = calculer_plage_groupe(date_reference, liste_deltaT);
@@ -70,12 +102,17 @@ function repartir_utilisateurs(date_reference, taille_groupe, distribution_proba
 };
 
 /*---------------------------------------------------------------------------------------*/
+// Fonctions de génération d'un histogramme quelconque
+/*---------------------------------------------------------------------------------------*/
 
-function generer_histogramme(horaires, dates_groupes, tailles_groupes, distribution_probabilites=distribution_probas) {
-	var nb_pas_temps = horaires.length;
+function generer_histogramme(liste_dates, dates_groupes, tailles_groupes, distribution_probabilites) {
+	// Génère l'histogramme de la répartition des dates d'arrivées des groupes d'individus de
+	// tailles tailles_groupes, ayant décidé d'arriver aux dates dates_groupes, et se répartissant
+	// selon distribution_probabilites. Les horaires sont les dates à associer aux valeurs de l'histogramme.
+	var nb_pas_temps = liste_dates.length;
 	var dictionnaire_histogramme = {};
 	for(var i = 0; i < nb_pas_temps; i++) {
-		dictionnaire_histogramme[horaires[i]] = 0;
+		dictionnaire_histogramme[liste_dates[i]] = 0;
 	};
 	var nb_groupes = dates_groupes.length;
 	for(var i = 0; i < nb_groupes; i++) {
@@ -86,26 +123,37 @@ function generer_histogramme(horaires, dates_groupes, tailles_groupes, distribut
 	};
 	var valeurs_histogramme = new Array(nb_pas_temps);
 	for(var i = 0; i < nb_pas_temps; i++) {
-		valeurs_histogramme[i] = dictionnaire_histogramme[horaires[i]];
+		valeurs_histogramme[i] = dictionnaire_histogramme[liste_dates[i]];
 	};
 	return valeurs_histogramme;
 };
 
 function ajouter_bruit_histogramme(histogramme, lambda) {
+	// Ajoute un bruit >0 (distribution de Poisson, espérance et variance lambda)
+	// à la répartition des individus au sein d'un histogramme.
 	var taille_histogramme = histogramme.length;
 	var bruit = PD.rpois(taille_histogramme, lambda);
 	var histogramme_bruite = histogramme.map((valeur, index) => valeur + bruit[index]);
 	return histogramme_bruite;
 };
 
-function redimensionner_histogramme(histogramme, total_voulu) {
+function redimensionner_histogramme(histogramme, mini, maxi) {
+	// Redimensionne l'histogramme pour que sa somme vale total_voulu. Nécessaire pour l'affichage.
 	var total_histogramme = histogramme.reduce((accu, val) => accu + val);
-	var histogramme_redim = histogramme.map((x) => Math.floor(x * total_voulu / total_histogramme));
+	// var max_histogramme = Math.max.apply(null, histogramme);
+	var histogramme_redim = histogramme.map((x) => Math.floor(mini + (x * (maxi - mini) / total_histogramme)));
 	return histogramme_redim;
 };
 
 /*---------------------------------------------------------------------------------------*/
-function calculer_fonction_cout(liste_dates, dates_groupes, tailles_groupes, distribution_probabilites=distribution_probas) {
+// Fonctions d'optimisation (simulation IA) pour générer la réponse de l'application
+/*---------------------------------------------------------------------------------------*/
+
+function calculer_fonction_cout(liste_dates, dates_groupes, tailles_groupes, distribution_probabilites) {
+	// Calcule la fonction de coût à optimiser. Il s'agit de la somme des fonctions de coût pour chaque groupe de personnes.
+	// Pour chaque groupe, on définit la fonction de coût comme le carré (pour une éventuelle optimisation convexe)
+	// de la fréquentation de la route au moment de son arrivée (comme toujours dans ce programme, on étale et pondère
+	// la fréquentation du groupe de personnes sur une plage de temps).
 	var histogramme = generer_histogramme(liste_dates, dates_groupes, tailles_groupes, distribution_probabilites);
 	var nb_groupes = dates_groupes.length;
 	var couts_groupes = new Array(nb_groupes);
@@ -120,15 +168,17 @@ function calculer_fonction_cout(liste_dates, dates_groupes, tailles_groupes, dis
 			var cout_date = probabilite_date * Math.pow(histogramme[indice_date], 2);
 			cout_groupe += cout_date;
 		};
-	couts_groupes[i] = cout_groupe;
+		couts_groupes[i] = cout_groupe;
 	};
 return couts_groupes.reduce((accu, val) => accu + val);
 };
 
 
 function optimiser(groupe_a_optimiser, intervalle_disponibilite, dates_groupes, tailles_groupes,
-				   liste_dates, distribution_probabilites=distribution_probas) {
-
+				   liste_dates, distribution_probabilites) {
+	// Sachant la date de départ des autres groupes d'individus, cette fonction détermine la meilleure date d'arrivée
+	// d'un groupe donné du point de vue du collectif, dans un intervalle de temps fourni par l'utilisateur. On procède
+	// pour cela à une recherche systématique du minimum de la fonction de coût sur cet intervalle.
 	var fonction_cout_partielle = function(date_groupe) {
 		var dates_groupes_modif = dates_groupes.slice();
 		dates_groupes_modif[groupe_a_optimiser] = date_groupe;
@@ -136,8 +186,7 @@ function optimiser(groupe_a_optimiser, intervalle_disponibilite, dates_groupes, 
 	};
 
 	var dates_possibles = liste_dates.filter((date) =>
-		horaire_en_minutes(date) >= horaire_en_minutes(intervalle_disponibilite[0]) &&
-		horaire_en_minutes(date) <= horaire_en_minutes(intervalle_disponibilite[1]));
+		(date >= intervalle_disponibilite[0]) && (date <= intervalle_disponibilite[1]));
 
 	var couts_possibles = dates_possibles.map((date) => fonction_cout_partielle(date));
 	var cout_possible_min = Math.min.apply(null, couts_possibles);
@@ -147,34 +196,108 @@ function optimiser(groupe_a_optimiser, intervalle_disponibilite, dates_groupes, 
 };
 
 /*---------------------------------------------------------------------------------------*/
-function calculer_histogramme_affichage() {};
-//discrétisation 15min
-
-function calculer_durees_trajets() {};
-//duree du trajet = durée à vide + (somme pondérée des valeurs de l'histogramme - somme pondérée des valeurs du groupe de personnes) * facteur_multi (0.8)
-
-function initialiser_departs() {};
-// à voir avec le reste du projet; initialiser à tt le monde à 8h30. Envoyer l'histogramme et les temps, régler les tablettes.
-
+// Fonctions de calcul des éléments affichés par l'application
 /*---------------------------------------------------------------------------------------*/
-module.exports = {
-	updateVisu: function(visu, clients, sockets) {};
-	// reprendre les entrées et sorties du code d'origine. déplacer le corps de la fonction hors des exports.
+
+function calculer_histogramme_affichage(histogramme_origine, horaires_affichage ,pas_temps_visualisation,
+										mini, maxi, niveau_bruit_affichage) {
+	// Cette fonction génère l'histogramme à afficher à partir des résultats de l'optimisation. Pour cela 
+	// on rééchantillonne l'histogramme-résultat pour respecter le pas de temps à afficher, puis
+	// on le redimensionne et on lui ajoute du bruit.
+	var horaires_minutes = horaires.map(horaire_en_minutes);
+	var pas_temps_visu_minutes = horaire_en_minutes(pas_temps_visualisation);
+	var nouvel_histogramme = horaires_affichage.map((x) => 0);
+	var nb_pas_temps = horaires.length;
+	for(var i = 0; i < nb_pas_temps; i++) {
+		var indice_horaire = Math.round((horaires_minutes[i] - horaires_minutes[0]) / pas_temps_visu_minutes);
+		nouvel_histogramme[indice_horaire] += histogramme_origine[i];
+	};
+	nouvel_histogramme = redimensionner_histogramme(nouvel_histogramme, mini, maxi);
+	nouvel_histogramme = ajouter_bruit_histogramme(nouvel_histogramme, niveau_bruit_affichage);
+	return nouvel_histogramme;
 };
 
+function calculer_durees_trajets(horaires, histogramme, dates_groupes, tailles_groupes,
+								 durees_base_trajets, distribution_probabilites) {
+	// A partir de l'histogramme résultat de l'optimisation, cette fonction détermine le temps de trajet estimé
+	// pour chaque groupe d'individus.
+	var dictionnaire_histogramme = {};
+	histogramme.forEach((valeur, indice) => dictionnaire_histogramme[horaires[indice]] = valeur);
+
+	var nb_groupes = dates_groupes.length;
+	var durees_trajets = new Array(nb_groupes);
+	var liste_deltaT = Object.keys(distribution_probabilites);
+	var liste_probas = Object.values(distribution_probabilites);
+	var plages_groupes = dates_groupes.map((date_ref) => calculer_plage_groupe(date_ref, liste_deltaT));
+	plages_groupes.forEach(function(plage, indice) {
+		var frequentation = plage.reduce((accu, date, indice_date) => 
+			accu + liste_probas[indice_date] * dictionnaire_histogramme[date], initialValue=0);
+		durees_trajets[indice] = Math.round(durees_base_trajets[indice] + 0.08 * frequentation);
+	});
+	return durees_trajets;
+};
+
+
 /*---------------------------------------------------------------------------------------*/
-//tests des différentes fonctions utilisées
-var temps = generer_horaires('06:00', '12:00', '00:15');
-var dates_groupes = ['08:00', '08:30', '09:00'];
-var tailles_groupes = [100, 100, 100];
+//Données à exporter
+/*---------------------------------------------------------------------------------------*/
+function Algorithme(profils) {
+	// Cette classe est une interface entre la partie algorithmique de la démo et l'affichage
+	// des résultats. On l'initialise en lui entrant les paramètres des utilisateurs (issus du
+	// fichier root/ressources/profils).
+	this.UserIDs= Object.keys(profils);
+	this.durees_base_trajets = this.UserIDs.map((id) => parseInt(profils[id]['time']));
+	this.dates_trajets = this.UserIDs.map((id) => '08:30');
+	this.tailles_groupes = this.UserIDs.map((id) => parseInt(profils[id]['count']));
 
-console.log(optimiser(2, ['08:00','08:30'], dates_groupes, tailles_groupes, temps));
+	this.initVisu = function(socket_visu) {
+		// Cette fonction sert à initialiser l'affichage sur l'ordinateur de la démo. Elle génère l'histogramme de départ
+		// et calcule les durées initiales de trajet pour chaque utilisateur, en considérant que tout le monde cherche à
+		// se rendre à 8h30 au travail. Puis elle transmet ces résultats à la visualisation via le socket socket_visu.
+		var histogramme = generer_histogramme(horaires, this.dates_trajets, this.tailles_groupes, distribution_probas);
+		var histogramme_affichage = calculer_histogramme_affichage(histogramme, horaires_visu, pas_temps_visu,
+																   mini, maxi, niveau_bruit_affichage);
+		var durees_trajets = calculer_durees_trajets(horaires, histogramme, this.dates_trajets, this.tailles_groupes,
+								 					 this.durees_base_trajets, distribution_probas);
 
-/*
-var x =generer_histogramme(temps, dates_groupes, tailles_groupes);
-console.log(x);
-var cout = calculer_fonction_cout(temps, dates_groupes, tailles_groupes);
-console.log(cout);
-//console.log(redimensionner_histogramme(x, 100));
-//console.log(ajouter_bruit_histogramme(x, 2));
-*/
+		var client_utilise = this.UserIDs[0];
+		socket_visu.emit('durees', durees_trajets);
+		socket_visu.emit('histogramme', histogramme_affichage);
+	};
+
+	this.updateVisu = function(sockets_mobile, socket_visu, client_actif, nouveaux_horaires) {
+		// Cette fonction est appelée lorsqu'un utilisateur client_actif change sa plage d'horaires d'arrivée. Elle calcule
+		// la date d'arrivée optimale pour cet utilisateur, puis actualise les temps de trajets pour chaque individu. Enfin elle
+		// communique ces résultats aux tablettes via le socket de client_actif et actualise l'affichage sur l'ordinateur via
+		// socket_visu.
+		console.log("Début de l'actualisation");
+		var indice_actif = this.UserIDs.indexOf(client_actif);
+		var date_optimale = optimiser(indice_actif, nouveaux_horaires, this.dates_trajets, this.tailles_groupes,
+									  horaires, distribution_probas);
+		this.dates_trajets[indice_actif] = date_optimale;
+
+		var histogramme = generer_histogramme(horaires, this.dates_trajets, this.tailles_groupes, distribution_probas);
+
+		var histogramme_affichage = calculer_histogramme_affichage(histogramme, horaires_visu, pas_temps_visu,
+																   mini, maxi, niveau_bruit_affichage);
+
+		var durees_trajets = calculer_durees_trajets(horaires, histogramme, this.dates_trajets, this.tailles_groupes,
+								 					 this.durees_base_trajets, distribution_probas);
+
+		var dictionnaire_trajets = {};
+		this.UserIDs.forEach((val, indice) => dictionnaire_trajets[val] = durees_trajets[indice]);
+
+		sockets_mobile[client_actif].emit('date_depart', {'actif':client_actif, 'nv_date':this.dates_trajets[indice_actif]});
+		sockets_mobile[client_actif].broadcast.emit('date_depart', {'actif':client_actif, 'nv_date':this.dates_trajets[indice_actif]});
+		sockets_mobile[client_actif].emit('durees', {'actif':client_actif, 'nv_durees':dictionnaire_trajets});
+		sockets_mobile[client_actif].broadcast.emit('durees', {'actif':client_actif, 'nv_durees':dictionnaire_trajets});
+
+		socket_visu.emit('histogramme', histogramme_affichage);
+		socket_visu.emit('durees', durees_trajets);
+		console.log("Fin de l'actualisation");
+	};
+};
+
+module.exports = { 			// Objets à appeler depuis index.js
+	Algorithme: Algorithme
+};

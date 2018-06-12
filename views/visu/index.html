@@ -13,15 +13,14 @@
 	var histogram = [];
 	var trajet = [];
 
-	socket.on('histogram', function (data) {
-		alert(data);
+	socket.on('histogramme', function (data) {
 		histogram = data;
-		console.log('histo: ',data);
+		//console.log('histo: ',data);
 	});
 
-	socket.on('times', function(data) {
+	socket.on('durees', function(data) {
 		trajet = data;
-		console.log('times: ',data);
+		//console.log('times: ',data);
 	});
   </script>
 </head>

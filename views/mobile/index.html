@@ -1,59 +1,74 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Flux App</title>
+  <title>Flux App</title>
   <link rel="manifest" href="assets/manifest.json">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
   <link href="assets/css/index.css" type="text/css" rel="stylesheet">
+  <link href="assets/css/jquery.timepicker.css" type="text/css" rel="stylesheet">
   <script type="text/javascript" src="libs/jquery-3.3.1.min.js"> </script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!-- <script type="text/javascript" src="libs/jquery.timepicker.min.js"> </script> -->
   <script>
+
 	const socket = io.connect('/mobile');
 
 	$(document).ready(function () {
-        // Update data with profile sent from backend
+
 		socket.on('profile', function (data) {
-			console.log('data', data);
-			if(data) {
-                $(".userName").html(data.name);
-                $("#from").html(data.from);
-                $("#time-user").html(data.time);
-            }
-		});
+  		if(data) {
+        $(".userName").html(data.name);
+        $("#from").html(data.from);
+        $("#time-user").html(data.time);
+      };
+	  });
 
-		$("#arrivalStart").on("change",function(d) {
-		    var start = $(this).val();
-			console.log('start', start);
-        	socket.emit('start', start);
-		});
+  	$("#arrivalStart").on("change",function(d) {
+  	  var start = $(this).val();
+  		console.log('start', start);
+      socket.emit('start', start);
+  	});
 
 
-		$("#arrivalEnd").on("change",function(d) {
-		    var end = $(this).val();
-			console.log('end', end);
-        	socket.emit('end', end);
-		});
+  	$("#arrivalEnd").on("change",function(d) {
+  	  var end = $(this).val();
+  		console.log('end', end);
+      socket.emit('end', end);
+  	});
 
-        console.log("Connected user");
-		socket.emit('client', 'unknown');
-		var profileId = /\?profile=(.*)/.exec(window.location)[1];
-        $("#calImage").attr("src","assets/images/"+profileId+".png")
-            console.log("User connected:",profileId);
-            socket.emit('client', profileId);
-        });
+    var montrer = false;
+  	var profileId = /\?profile=(.*)/.exec(window.location)[1];
+    $("#calImage").attr("src","assets/images/"+profileId+".png")
+    socket.emit('client', profileId);
 
-        socket.on('suggestion',function(v) {
-            $("#suggestedTime").html(v);
-            $("#suggestion").show();
-        });
+    socket.on('chatbot_affichable', function(data) {alert('rrr');montrer = true});
 
-	socket.on('time-move',function(v) {
-            $("#timeMove").html(v);
-            $("#timeMove").show();
-        });
-   </script>
+    socket.on('date_depart',function(data) {
+        if(data.actif == profileId) {
+          $("#suggestedTime").html(data.nv_date);
+          if(montrer) {$("#suggestion").show()};
+        };
+    });
+
+  	socket.on('durees',function(data) {
+      if(data.actif != profileId && montrer) {
+        var deltaT = parseInt($('#timeMove').html()) - data.nv_durees[profileId];
+        if(deltaT != 0) {
+          deltaT = (deltaT < 0) ? ('perdez ' + String(Math.abs(deltaT))) :
+                                  ('gagnez ' + String(Math.abs(deltaT)));
+          $("#deltaT").html(String(deltaT));
+          $("#effet_collegues").show();
+        };
+      };
+      $("#timeMove").html(data.nv_durees[profileId]);
+      $("#timeMove").show();
+    });
+
+  });
+
+  </script>
 
 </head>
 
@@ -99,8 +114,22 @@
     	      <h3> Je peux arriver entre :</h3>
           </div>
           <div id="flexible">
-            <input id="arrivalStart" class="timebis" type="time">
-            <input id="arrivalEnd" class="timebis" type="time">
+            <input id="arrivalStart" class="timebis" type="time" value='08:30'>
+            <input id="arrivalEnd" class="timebis" type="time" value='08:30'>
+<!--             <input id="basicExample" type="text">
+            <script>
+              $(function() {
+                $('#basicExample').timepicker({"useSelect":true,
+                                                "timeFormat":'g:i',
+                                                "step":15,
+                                                "minTime":'06:30',
+                                                "maxTime":'11:30'});
+
+                alert($('select'));
+                $('select')[0].on('mousedown',{if(this.options.length>8){this.size=8;}});
+                $('select')[0].on('change', {this.size=0});
+                $('select')[0].on('blur', {this.size=0});
+            </script> -->
           </div>
        </div>
 
@@ -110,16 +139,12 @@
                 Je vous propose d'arriver à <span id="suggestedTime"></span> pour fluidifer le trafic. </h1>
             </div>
         </div>
-<!--
-    <div id="soustitre"> <h4> Demain soir </h4> </div>
-    <div id="depart" class="element"> <h2> Vous voulez arriver à :</h2> </div>
-    <input class="time" type="time">
-    <div id="flexibilite" class="element"> <h3> Vous pouvez arriver entre :</h3> </div>
-    <div id="flexible">
-      <input class="timebis" type="time">
-      <input class="timebis" type="time">
-    </div>
--->
+
+        <div class="bulle" id="effet_collegues" style="display: none">
+            <div class="element">
+                <h1> Vos collègues ont changé leurs plans ! Vous <span id="deltaT"></span> minutes. </br>
+            </div>
+        </div>
 
    </div>
 
@@ -141,8 +166,6 @@
       });
     });
    </script>
-
-
 
 </body>
 
