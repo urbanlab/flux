@@ -22,15 +22,15 @@ Il s'agit d'une application Web réalisée avec un serveur NodeJS et deux pages 
 
 ## Guide d'utilisation
 
-**/!\\**: Cette démo a été réalisée sous Linux (Ubuntu 16.04) et avec Google Chrome, son support n'est pas garanti sous d'autres OS et elle ne fonctionne pas sous d'autres navigateurs !
+**/!\\Attention:** Cette démo a été réalisée sous Linux (Ubuntu 16.04) et avec Google Chrome, son support n'est pas garanti sous d'autres OS et elle ne fonctionne pas sous d'autres navigateurs !
 
 ### Téléchargement et préparation
 1) Ouvrir une console et entrer:
-`
+```
 git clone https://github.com/urbanlab/flux.git
 cd flux
 chmod +x launch/start.sh
-`
+```
 2) Relever l'adresse IP de l'ordinateur utilisé avec la commande ifconfig
 
 ### Lancement de la démo
@@ -40,11 +40,17 @@ chmod +x launch/start.sh
 	* (adresse_IP_relevée):3000/mobile/?profile=lyon7
 	* (adresse_IP_relevée):3000/mobile/?profile=tassin
 	* (adresse_IP_relevée):3000/mobile/?profile=villeurbanne
-3bis) Si ces URLs sont déjà chargées, recharger les pages des tablettes.
-4) Pour terminer la démo, fermet la page Google de l'ordinateur avec Ctrl+F4
+4) Si ces URLs sont déjà chargées, recharger les pages des tablettes.
+5) Pour terminer la démo, fermet la page Google de l'ordinateur avec Ctrl+F4
 
 ### En cas de problème
 * *La page affichée par l'ordinateur est une image statique*:
 ** Recharger la page Web de l'ordinateur puis celles des tablettes.
 * *Les tablettes ne chargent pas leur page Web et affichent une erreur*:
 ** Vérifier que les tablettes et l'ordinateur-serveur sont bien connectés sur le même réseau Wifi
+
+### Modification des paramètres de la démo
+Pour modifier les paramètres de la démo:
+* Données des utilisateurs: *root/ressources/profils*
+* Paramètres de fonctionnement: *root/scripts/fonctions_backend.js*
+* Paramètres d'affichage: s'il ne s'agit que de la taille des barres de l'histogramme, modifier uniquement *root/scripts/fonctions_backend.js*; sinon il faudra modifier le fichier *root/views/visu/sketch.js* en parallèle (tout y est hard-codé, donc il faudra modifier les définitions de variables en tête du fichier ainsi que le code de la fonction *draw*)
