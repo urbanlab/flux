@@ -53,4 +53,9 @@ chmod +x launch/start.sh
 Pour modifier les paramètres de la démo:
 * Données des utilisateurs: *root/ressources/profils*
 * Paramètres de fonctionnement: *root/scripts/fonctions_backend.js*
+* Plage et pas de temps d'affichage: en l'état, il faut adapter les fichiers *root/scripts/fonctions_backend.js*, *root/views/visu/sketch.js* et *root/views/visu/index.html*, toutes les dates étant hard-codées sur ces deux derniers fichiers.
 * Paramètres d'affichage: s'il ne s'agit que de la taille des barres de l'histogramme, modifier uniquement *root/scripts/fonctions_backend.js*; sinon il faudra modifier le fichier *root/views/visu/sketch.js* en parallèle (tout y est hard-codé, donc il faudra modifier les définitions de variables en tête du fichier ainsi que le code de la fonction *draw*)
+
+## Encore à faire:
+* Gérer la communication des horaires de fonctionnement entre les différents fichiers. (attention: un utilisateur ne doit pas pouvoir entrer une date telle que une partie de son groupe arrive en-dehors de la plage horaire utilisée dans le programme).
+* Optimiser l'affichage sur les tablettes, notamment l'interface de sélection de la plage horaire d'arrivée.
