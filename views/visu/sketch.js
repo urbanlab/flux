@@ -80,7 +80,7 @@ function draw() {
   congestionPropagationFactor = map(congestion, congestionMin, congestionMax, 1, 0);
   congestionPropagation = congestionPropagationInitial * congestionPropagationFactor;
 
-image(img, 0, 0, windowWidth, windowHeight);
+  image(img, 0, 0, windowWidth, windowHeight);
 
  //CARTE
 

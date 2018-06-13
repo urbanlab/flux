@@ -10,7 +10,6 @@
   <script type="text/javascript" src="libs/jquery-3.3.1.min.js"> </script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <!-- <script type="text/javascript" src="libs/jquery.timepicker.min.js"> </script> -->
   <script>
 
 	const socket = io.connect('/mobile');
@@ -43,7 +42,7 @@
     $("#calImage").attr("src","assets/images/"+profileId+".png")
     socket.emit('client', profileId);
 
-    socket.on('chatbot_affichable', function(data) {alert('rrr');montrer = true});
+    socket.on('chatbot_affichable', function(data) {montrer = true});
 
     socket.on('date_depart',function(data) {
         if(data.actif == profileId) {
@@ -114,24 +113,10 @@
     	      <h3> Je peux arriver entre :</h3>
           </div>
           <div id="flexible">
-            <input id="arrivalStart" class="timebis" type="time" value='08:30'>
-            <input id="arrivalEnd" class="timebis" type="time" value='08:30'>
-<!--             <input id="basicExample" type="text">
-            <script>
-              $(function() {
-                $('#basicExample').timepicker({"useSelect":true,
-                                                "timeFormat":'g:i',
-                                                "step":15,
-                                                "minTime":'06:30',
-                                                "maxTime":'11:30'});
-
-                alert($('select'));
-                $('select')[0].on('mousedown',{if(this.options.length>8){this.size=8;}});
-                $('select')[0].on('change', {this.size=0});
-                $('select')[0].on('blur', {this.size=0});
-            </script> -->
+            <select id="arrivalStart" class="timebis"></select>
+            <select id="arrivalEnd" class="timebis"></select>
           </div>
-       </div>
+        </div>
 
         <div class="bulle" id="suggestion" style="display: none">
             <div class="element">
@@ -160,10 +145,23 @@
    </div>
 
    <script>
+
+    // On rend le calendrier consultable
     $(function() {
       $('.calendarpicto').on('click', function() {
       $('.calendar-wrapper').toggleClass('show');
       });
+    });
+
+    // On définit les horaires que peuvent choisir les utilisateurs (en dur, à implémenter pour qu'ils soient synchronisés sur
+    // toute l'application)
+    $(function() {
+      var choix = ['06:30', '06:45', '07:00', '07:15', '07:30', '07:45', '08:00', '08:15', '08:30', '08:45',
+                   '09:00', '09:15', '09:30', '09:45', '10:00', '10:15', '10:30', '10:45', '11:00', '11:15', '11:30'];
+      choix.forEach(function(date) {
+        $('.timebis').append("<option value='" + date + "'>" + date + "</option>");
+      });
+      $('.timebis').val('08:30');
     });
    </script>
 
