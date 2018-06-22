@@ -16,7 +16,7 @@
 
 	$(document).ready(function () {
 
-		socket.on('profile', function (data) {
+		socket.on('profils', function (data) {
   		if(data) {
         $(".userName").html(data.name);
         $("#from").html(data.from);

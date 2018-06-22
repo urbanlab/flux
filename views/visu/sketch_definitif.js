@@ -7,9 +7,6 @@ var flux = [
   [600, 880], [600,860], [600, 840], [600,820], [600, 800], [600, 780], [600,760], [600, 740], [600,720], [600, 700], [600, 680], [600,660], [600, 640], [600,620], [600, 600], [600,580], [602,560], [605,540], [609,520], [614,500], [620,480], [627,460], [635,440], [645,420], [656,400], [668,380], [682,360], [700,340], [700,340], [717,320], [740,300], [763,280], [788,260], [820,240], [856,220], [890,205], [925,193], [955,183], [985,176], [1015,170], [1045,167], [1075,165], [1098,165], [1110,190], [1130,205], [1155,220], [1155,240], [1155,260], [1155,280], [1155,300], [1155,320], [1155,340], [1155,360], [1155,380], [1155,400], [1155,420], [1155,440], [1155,460], [1155,480], [1155,500], [1155,520], [1155,540], [1155,560], [1155,580], [1155,600], [1155,620], [1155,640], [1155,660], [1155,680], [1155,700], [1155,720], [1155,740], [1155,760], [1155,780], [1155,800], [1155,820], [1155,840], [1175,850], [1195,850], [1215,850], [1235,850], [1255,850], [1275,850], [1295,850], [1320,850], [1320, 830]
 ]
 
-var temps_trajets_a_vide = [35, 45, 25];
-var temps_trajets_max = [66, 76, 56];
-
 var congestionMin = 1;
 var congestionMax = 13;
 var congestionPropagationInitial = 13;
@@ -18,7 +15,7 @@ var congestionPropagationFactor = 1.5;
 var colorGreen = 120;
 var colorRed = 0;
 
-var congestion = 5;
+var congestion = 1;
 
 var flashlights = new Array();
 var flashlightsDensity = 1;
@@ -36,7 +33,7 @@ var scaling_histogramme = 12;
 // windowWidth et windowHeight n'existent que dans draw, il faut donc définir les paramètres
 // d'affichage dans draw via cette fonction.
 function definir_reperes(windowWidth, windowHeight) {
-  var xsep = Math.floor(3 * windowWidth / 4);
+  var xsep = Math.floor(2 * windowWidth / 3);
   var ysep = Math.floor(3 * windowHeight / 4);
 
   var y1 = Math.floor(windowHeight / 3);
@@ -323,7 +320,7 @@ function tracer_carte(windowWidth, windowHeight) {
       //virage
       colorMode(HSB, 360, 100, 100);
       noFill();
-      stroke(80, 100, 100);
+      stroke(80, 100, 100,);
       strokeWeight(30);
       strokeCap(SQUARE);
       arc(resc_x(1160), resc_y(150), 130 * xscale, resc_y(130), HALF_PI, PI);
@@ -363,9 +360,18 @@ function tracer_carte(windowWidth, windowHeight) {
 
   image_rescalee(autoroute, windowWidth, windowHeight, 510, 300, windowWidth/24, windowHeight/24);
 
-  if (xt > 1570){xt = xt - 10} else {xt = 2200};
+  if (xt > 1570){xt = xt - 10} else {xt = 2000};
+
   image_rescalee(tram, windowWidth, windowHeight, xt, 870, 100, 50);
-  image_rescalee(tunnel, windowWidth, windowHeight, 1565, 870, 60, 60);
+
+  image_rescalee(tunnel, windowWidth, windowHeight, 1566, 870, 60, 60);
+  noStroke();
+  fill(255);
+  rect(1420, 750, 115, 150);
+  rect(1560, 780, 50, 100);
+  fill(165);
+  rect(1535, 700, 30, 200);
+  //rectMode(CENTER);
 
   noFill();
   stroke(165);
@@ -413,69 +419,16 @@ function tracer_histogramme(windowWidth, windowHeight) {
       rect(lar * i, windowHeight-histogram[i]*scaling_histogramme, largeur_barre, histogram[i] * scaling_histogramme);
       textFont(MontserratBold);
       textSize(14);
-      textAlign(CENTER, BOTTOM)
       fill(255);
       strokeWeight(2);
-      text(time[i], i*lar + lar/2, windowHeight - 3);
+      text(time[i], i*lar + 7, windowHeight - 6);
     };
     };
 }
 
-function tracer_horloge(windowWidth, windowHeight) {
-  var lar = Math.floor(xsep / 25);
-  var x_horloge = lar * slider.value() + lar / 2 - 25;
-  var y_ligne = ysep + 30;
+function tracer_horloge(windowWidth, windowHeight) {};
 
-  stroke(70);
-  strokeWeight(1);
-  line(x_horloge + 25, y_ligne, x_horloge + 25, windowHeight);
-
-  stroke(255);
-  strokeWeight(1);
-  strokeCap(SQUARE);
-  line(0, y_ligne, xsep - 2, y_ligne);
-
-  image(horloge, x_horloge, y_ligne - 25, 50, 50);
-
-};
-
-function echelle_couleur(temps_trajet, temps_trajet_min, temps_trajets_max) {
-  var valeur_perdue = (temps_trajet - temps_trajet_min) / (temps_trajets_max - temps_trajet_min);
-  var r = 255 * valeur_perdue;
-  var g = 255 * (1 - valeur_perdue);
-  var b = 0;
-  return [r,g,b];
-}
-
-function tracer_profils(windowWidth, windowHeight) {
-  var noms = ['Lucie', 'Alphonse', 'Gaby'];
-  var couleurs = trajet.map((temps, i) => echelle_couleur(temps, temps_trajets_a_vide[i], temps_trajets_max[i]));
-  var x_nom = xsep + (windowWidth - xsep) / 2;
-  var y_nom;
-  var x_icone = xsep + (windowWidth - xsep) / 2 - 125;
-  var y_icone;
-  var x_temps = xsep + (windowWidth - xsep) / 2;
-  var y_temps;
-  for(var i=0; i<3; i++) {
-    y_nom = i * y1 + 40;
-    y_icone = i * y1 + (y1 / 2) - 125;
-    y_temps = (i + 1) * y1 - 50;
-
-    textFont(MontserratBold);
-    textSize(45);
-    textAlign(CENTER, CENTER);
-    fill(255);
-    strokeWeight(2);
-    text(noms[i], x_nom, y_nom);
-
-    tint.apply(this, couleurs[i]);
-    image(voiture, x_icone, y_icone, 250, 250);
-
-    textSize(40);
-    text(String(trajet[i]) + ' minutes', x_temps, y_temps);
-  };
-  noTint();
-};
+function tracer_profils(windowWidth, windowHeight) {};
 
 function tracer_flashlights(windowWidth, windowHeight) {
     noStroke();
@@ -557,21 +510,7 @@ function tracer_flashlights(windowWidth, windowHeight) {
       }
     }
     flashlightsSlowFramesCount = 0;
-  }
-  for(var h in flux) {
-     if (flux.hasOwnProperty(h)) {
-      noStroke();
-      strokeWeight(5);
-      fill(255, 255, 255, 120);
-
-        if (flashlights.indexOf(parseInt(h)) != -1) {
-          stroke(255, 255, 255);
-          strokeWeight(10);
-          fill(255, 255, 255);
-        }
-      ellipse(resc_x(flux[h][0]), resc_y(flux[h][1]), 10, 10);
-     }
-  }
+    }
 }
 
 
@@ -589,8 +528,6 @@ function setup() {  // revoir la partie slider
   autoroute = loadImage("/assets-visu/assets/a6.png");
   tram = loadImage("/assets-visu/assets/tram.png");
   tunnel = loadImage("/assets-visu/assets/tunnel.png");
-  voiture = loadImage("/assets-visu/assets/car.png");
-  horloge = loadImage("/assets-visu/assets/clock.png");
   slider = createSlider(0, 24, 0, 1);
   slider.position(100, 1040);
   slider.style('width', '0px');
@@ -637,9 +574,9 @@ function draw() {
 
   tracer_carte(windowWidth, windowHeight);
   tracer_bordures(windowWidth, windowHeight);
-  tracer_profils(windowWidth, windowHeight);
-  tracer_horloge(windowWidth, windowHeight);
+  // tracer_profils(windowWidth, windowHeight);
   tracer_histogramme(windowWidth, windowHeight);
+  // tracer_horloge(windowWidth, windowHeight);
   tracer_flashlights(windowWidth, windowHeight);
 }
 
