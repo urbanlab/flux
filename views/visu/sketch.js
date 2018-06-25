@@ -468,7 +468,7 @@ function tracer_profils(windowWidth, windowHeight) {
     strokeWeight(2);
     text(noms[i], x_nom, y_nom);
 
-    tint.apply(this, couleurs[i]);
+    try {tint.apply(this, couleurs[i])} catch(err) {'erreur couleurs encore indéfinies'};
     image(voiture, x_icone, y_icone, 250, 250);
 
     textSize(40);
