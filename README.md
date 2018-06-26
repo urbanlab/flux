@@ -45,9 +45,9 @@ chmod +x launch/start.sh
 
 ### En cas de problème
 * *La page affichée par l'ordinateur est une image statique*:
-** Recharger la page Web de l'ordinateur (touche F5) puis celles des tablettes.
+  * Recharger la page Web de l'ordinateur (touche F5) puis celles des tablettes.
 * *Les tablettes ne chargent pas leur page Web et affichent une erreur*:
-** Vérifier que les tablettes et l'ordinateur-serveur sont bien connectés sur le même réseau Wifi
+  * Vérifier que les tablettes et l'ordinateur-serveur sont bien connectés sur le même réseau Wifi
 
 ### Modification des paramètres de la démo
 Pour modifier les paramètres de la démo:
