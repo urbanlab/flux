@@ -45,17 +45,17 @@ chmod +x launch/start.sh
 
 ### En cas de problème
 * *La page affichée par l'ordinateur est une image statique*:
-** Recharger la page Web de l'ordinateur puis celles des tablettes.
+** Recharger la page Web de l'ordinateur (touche F5) puis celles des tablettes.
 * *Les tablettes ne chargent pas leur page Web et affichent une erreur*:
 ** Vérifier que les tablettes et l'ordinateur-serveur sont bien connectés sur le même réseau Wifi
 
 ### Modification des paramètres de la démo
 Pour modifier les paramètres de la démo:
 * Données des utilisateurs: *root/ressources/profils*
-* Paramètres de fonctionnement: *root/scripts/fonctions_backend.js*
-* Plage et pas de temps d'affichage: en l'état, il faut adapter les fichiers *root/scripts/fonctions_backend.js*, *root/views/visu/sketch.js* et *root/views/visu/index.html*, toutes les dates étant hard-codées sur ces deux derniers fichiers.
-* Paramètres d'affichage: s'il ne s'agit que de la taille des barres de l'histogramme, modifier uniquement *root/scripts/fonctions_backend.js*; sinon il faudra modifier le fichier *root/views/visu/sketch.js* en parallèle (tout y est hard-codé, donc il faudra modifier les définitions de variables en tête du fichier ainsi que le code de la fonction *draw*)
+* Paramètres généraux (horaires, pas de temps, ...): *root/scripts/fonctions_backend.js*
+* Paramètres d'affichage (écran): *root/views/visu/sketch.js*
+* Paramètres d'affichage (tablettes): *root/views/mobile/index.html*
 
 ## Encore à faire:
-* Gérer la communication des horaires de fonctionnement entre les différents fichiers. (attention: un utilisateur ne doit pas pouvoir entrer une date telle que une partie de son groupe arrive en-dehors de la plage horaire utilisée dans le programme).
-* Optimiser l'affichage sur les tablettes, notamment l'interface de sélection de la plage horaire d'arrivée.
+* Faire en sorte que le trafic simulé sur la route par des ellipses mobiles corresponde au trafic "réel".
+* Ajouter un système de crédits, qu'on gagne en bénéficiant au système et qu'on consomme lorsqu'on est une charge pour lui.

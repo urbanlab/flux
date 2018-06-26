@@ -9,19 +9,37 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="/assets-visu/utils.js"></script>
   <script>
-	const socket = io.connect('/visu');
-	var histogram = [];
-	var trajet = [];
+	const socket = io.connect('/visu');               // On ouvre une connexion avec le serveur
+	
+	// Variables utilisées pour les tracés dans sketch.js
+	var horaires = [];                                // plage de temps discrétisée de la démo
+	var histogram = [];								  // histogramme
+	var trajet = [];                                  // temps de trajets respectifs des 3 groupes
+	var temps_trajets_a_vide = [];                    // temps de trajets de chaque groupe(0 circulation)
+	var temps_trajets_max = [];                       // temps de trajets de chaque groupe(saturation max)
+
+	// Chargement des données envoyées par le serveur pour la visualisation
+	socket.on('horaires', function(data) {
+		horaires = data;
+	});
 
 	socket.on('histogramme', function (data) {
 		histogram = data;
-		//console.log('histo: ',data);
 	});
+
 
 	socket.on('durees', function(data) {
 		trajet = data;
-		//console.log('times: ',data);
 	});
+
+	socket.on('durees_base', function(data) {
+		temps_trajets_a_vide = data;
+	});
+
+	socket.on('durees_max', function(data) {
+		temps_trajets_max = data;
+	});
+
   </script>
 </head>
 <body>

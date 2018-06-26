@@ -7,18 +7,19 @@ const heure_max = '12:00';      // heure d'arrivée maximum pour la démo
 const pas_temporel = '00:15';   // pas de temps discret utilisé par la démo.
 const pas_temps_visu = '00:15'; // pas de temps de l'histogramme affiché à l'écran
 
-const horaires = generer_horaires(heure_min, heure_max, pas_temporel);         // temps discrétisé pour les calculs
-const horaires_visu = generer_horaires(heure_min, heure_max, pas_temps_visu);  // temps discrétisé pour l'affichage.
-
 const PD = require("probability-distributions"); // librairie pour calculer des distributions de probabilités.
 
-const distribution_probas = {                    // distribution des arrivées d'un groupe de personnes sur une plage de temps
-	'-00:30':0.01,
+const distribution_probas = {                    // distribution des arrivées d'un groupe de personnes sur une plage de temps.
+	'-00:30':0.01,								 // les deltaT doivent être multiples du pas temporel
 	'-00:15':0.35,
 	'+00:00':0.45,
 	'+00:15':0.15,
 	'+00:30':0.04
 };
+
+const horaires = generer_horaires(heure_min, heure_max, pas_temporel);                  // temps discrétisé pour les calculs
+const horaires_visu = generer_horaires(heure_min, heure_max, pas_temps_visu);           // temps discrétisé pour l'affichage.
+const horaires_eligibles = generer_choix_horaires(horaires_visu, distribution_probas);  // horaires sélectionnables sur l'IHM
 
 const mini = 2;                            // paramètres d'affichage (taille de l'histogramme verticalement)
 const maxi = 35;
@@ -30,9 +31,15 @@ const niveau_bruit_affichage = 0.5;        // paramètres d'affichage (ajout d'u
 /*---------------------------------------------------------------------------------------*/
 
 function horaire_en_minutes(horaire) {
-	// Traduit un horaire (format'hh:mm') en une valeur en minutes (int)
-	var heures_et_minutes = horaire.split(':');
-	return eval(heures_et_minutes[0]) * 60 + eval(heures_et_minutes[1]);
+	// Traduit un horaire (format'hh:mm') en une valeur en minutes (int). Gère les horaires signés.
+	if(horaire.length == 6) {  // si l'horaire a un signe
+		var signe = (horaire.charAt(0) == '-') ? -1 : 1;
+		var heures_et_minutes = horaire.slice(1).split(':');
+	} else {
+		var signe = 1;
+		var heures_et_minutes = horaire.split(':');
+	};
+	return signe * (eval(heures_et_minutes[0]) * 60 + eval(heures_et_minutes[1]));
 };
 
 function minutes_en_horaire(minutes) {
@@ -69,6 +76,33 @@ function generer_horaires(heure_min, heure_max, pas_temps) {
 	return vecteur_horaires;
 };
 
+function generer_choix_horaires(vecteur_horaires, distribution_probabilites) {
+	// Génère les horaires auxquels on peut choisir d'arriver (évite les effets de bords lorsqu'un
+	// groupe de personne décide d'arriver aux horaires min ou max mais présente un étalement temporel)
+	var heure_min = vecteur_horaires[0],
+		heure_max = vecteur_horaires[vecteur_horaires.length - 1],
+		liste_deltaT = Object.keys(distribution_probabilites);
+
+	var heure_min_minutes = horaire_en_minutes(heure_min),
+		heure_max_minutes = horaire_en_minutes(heure_max),
+		liste_deltaT_minutes = liste_deltaT.map(horaire_en_minutes),
+		pas_temps_visu_minutes = horaire_en_minutes(pas_temps_visu);
+
+	var deltaT_min = Math.min.apply(null, liste_deltaT_minutes),
+		deltaT_max = Math.max.apply(null, liste_deltaT_minutes);
+
+	var heure_min_eligible_minutes = Math.max(heure_min_minutes, heure_min_minutes - deltaT_min),
+		heure_max_eligible_minutes = Math.min(heure_max_minutes, heure_max_minutes - deltaT_max);
+
+	heure_min_eligible_minutes = Math.ceil(heure_min_eligible_minutes / pas_temps_visu_minutes) * pas_temps_visu_minutes;
+	heure_max_eligible_minutes = Math.floor(heure_max_eligible_minutes / pas_temps_visu_minutes) * pas_temps_visu_minutes;
+
+	var heure_min_eligible = minutes_en_horaire(heure_min_eligible_minutes),
+		heure_max_eligible = minutes_en_horaire(heure_max_eligible_minutes);
+
+	return generer_horaires(heure_min_eligible, heure_max_eligible, pas_temps_visu);
+};
+
 function calculer_plage_groupe(date_reference, liste_deltaT) {
 	// Pour un groupe de personnes, les individus peuvent arriver à plusieurs horaires
 	// autours de la date de référence: date_reference - k*deltaT, ..., date_reference + k*deltaT.
@@ -83,6 +117,7 @@ function calculer_plage_groupe(date_reference, liste_deltaT) {
 	};
 	return plage;
 };
+
 
 // Attention il faudra éviter les effets de bord: les horaires proposés sont à +/-30min des
 // bords de l'histogramme
@@ -251,9 +286,11 @@ function Algorithme(profils) {
 	this.tailles_groupes = this.UserIDs.map((id) => parseInt(profils[id]['count']));
 
 	this.initVisu = function(socket_visu) {
-		// Cette fonction sert à initialiser l'affichage sur l'ordinateur de la démo. Elle génère l'histogramme de départ
-		// et calcule les durées initiales de trajet pour chaque utilisateur, en considérant que tout le monde cherche à
-		// se rendre à 8h30 au travail. Puis elle transmet ces résultats à la visualisation via le socket socket_visu.
+		// Cette fonction sert à initialiser l'affichage sur l'ordinateur de la démo. Elle commence par générer les
+		// paramètres fixes de la démo (plage de temps utilisée, durées de trajets de référence pour l'échelle de couleur
+		// utilisée). Puis elle génère l'histogramme de départ et calcule les durées initiales de trajet pour chaque
+		// utilisateur, en considérant que tout le monde cherche à se rendre à 8h30 au travail. Enfin elle transmet ces
+		// résultats à la visualisation via le socket socket_visu.
 		var histogramme = generer_histogramme(horaires, this.dates_trajets, this.tailles_groupes, distribution_probas);
 		var histogramme_affichage = calculer_histogramme_affichage(histogramme, horaires_visu, pas_temps_visu,
 																   mini, maxi, niveau_bruit_affichage);
@@ -261,8 +298,11 @@ function Algorithme(profils) {
 								 					 this.durees_base_trajets, distribution_probas);
 
 		var client_utilise = this.UserIDs[0];
+		socket_visu.emit('durees_base', this.durees_base_trajets);
+		socket_visu.emit('durees_max', durees_trajets);			    // On initialise tous les trajets comme débutant à la même heure => durée initiale maximale
 		socket_visu.emit('durees', durees_trajets);
 		socket_visu.emit('histogramme', histogramme_affichage);
+		socket_visu.emit('horaires', horaires);
 	};
 
 	this.updateVisu = function(sockets_mobile, socket_visu, client_actif, nouveaux_horaires) {
@@ -299,5 +339,7 @@ function Algorithme(profils) {
 };
 
 module.exports = { 			// Objets à appeler depuis index.js
-	Algorithme: Algorithme
+	Algorithme: Algorithme,
+	horaires: horaires,
+	horaires_eligibles: horaires_eligibles
 };

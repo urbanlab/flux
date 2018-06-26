@@ -1,15 +1,20 @@
-var slider;
-var histogram;
-var trajet;
+/*---------------------------------------------------------------------------------------*/
+// Variables dont les valeurs sont communiquées depuis le serveur à index.html
+/*---------------------------------------------------------------------------------------*/
+var horaires                                               // plage de temps discrète de la démo
+var temps_trajets_a_vide                                   // durées des trajets de chaque utilisateur en l'absence de circulation (-> échelle de couleur)
+var temps_trajets_max                                      // durées max des trajets pour chaque usager (-> échelle de couleur)
+var trajet;                                                // durées des trajets de chaque usager
+var histogram;                                             // liste des valeurs de l'histogramme
 
-var time = ['06:00', '06:15', '06:30', '06:45', '07:00', '07:15', '07:30', '07:45', '08:00', '08:15', '08:30', '08:45', '09:00', '09:15', '09:30', '09:45', '10:00', '10:15', '10:30', '10:45' ,'11:00', '11:15', '11:30', '11:45', '12:00'];
-var flux = [
-  [600, 880], [600,860], [600, 840], [600,820], [600, 800], [600, 780], [600,760], [600, 740], [600,720], [600, 700], [600, 680], [600,660], [600, 640], [600,620], [600, 600], [600,580], [602,560], [605,540], [609,520], [614,500], [620,480], [627,460], [635,440], [645,420], [656,400], [668,380], [682,360], [700,340], [700,340], [717,320], [740,300], [763,280], [788,260], [820,240], [856,220], [890,205], [925,193], [955,183], [985,176], [1015,170], [1045,167], [1075,165], [1098,165], [1110,190], [1130,205], [1155,220], [1155,240], [1155,260], [1155,280], [1155,300], [1155,320], [1155,340], [1155,360], [1155,380], [1155,400], [1155,420], [1155,440], [1155,460], [1155,480], [1155,500], [1155,520], [1155,540], [1155,560], [1155,580], [1155,600], [1155,620], [1155,640], [1155,660], [1155,680], [1155,700], [1155,720], [1155,740], [1155,760], [1155,780], [1155,800], [1155,820], [1155,840], [1175,850], [1195,850], [1215,850], [1235,850], [1255,850], [1275,850], [1295,850], [1320,850], [1320, 830]
-]
 
-var temps_trajets_a_vide = [35, 45, 25];
-var temps_trajets_max = [66, 76, 56];
+/*---------------------------------------------------------------------------------------*/
+// Variables internes de l'algorithme de visualisation
+/*---------------------------------------------------------------------------------------*/
 
+var slider;                                                // curseur invisible permettant de sélectionner une position dur la "route de l'entreprise"
+
+// Paramètres d'affichage de la "route de l'entreprise" et de sa couleur
 var congestionMin = 1;
 var congestionMax = 13;
 var congestionPropagationInitial = 13;
@@ -18,8 +23,9 @@ var congestionPropagationFactor = 1.5;
 var colorGreen = 120;
 var colorRed = 0;
 
+// Paramètres d'affichage de la circulation sur la "route de l'entreprise"
 var congestion = 5;
-
+var flux = [[600, 880], [600,860], [600, 840], [600,820], [600, 800], [600, 780], [600,760], [600, 740], [600,720], [600, 700], [600, 680], [600,660], [600, 640], [600,620], [600, 600], [600,580], [602,560], [605,540], [609,520], [614,500], [620,480], [627,460], [635,440], [645,420], [656,400], [668,380], [682,360], [700,340], [700,340], [717,320], [740,300], [763,280], [788,260], [820,240], [856,220], [890,205], [925,193], [955,183], [985,176], [1015,170], [1045,167], [1075,165], [1098,165], [1110,190], [1130,205], [1155,220], [1155,240], [1155,260], [1155,280], [1155,300], [1155,320], [1155,340], [1155,360], [1155,380], [1155,400], [1155,420], [1155,440], [1155,460], [1155,480], [1155,500], [1155,520], [1155,540], [1155,560], [1155,580], [1155,600], [1155,620], [1155,640], [1155,660], [1155,680], [1155,700], [1155,720], [1155,740], [1155,760], [1155,780], [1155,800], [1155,820], [1155,840], [1175,850], [1195,850], [1215,850], [1235,850], [1255,850], [1275,850], [1295,850], [1320,850], [1320, 830]] //emplacement des points lumineuxreprésentant le flux d'usagers.
 var flashlights = new Array();
 var flashlightsDensity = 1;
 var flashlightsFramesCountMax = 2;
@@ -28,14 +34,19 @@ var flashlightsSlowFramesCountMax = 1;
 var flashlightsSlowFramesCount = 0;
 var flashlightsSlowIndex = 43;
 
+// Affichage du tramway (position de départ, hors-champ). Ancien système de coordonnées.
 var xt = 2000;
+
+// Taille de l'histogramme sur l'image (adapter par essais-erreurs)
 var scaling_histogramme = 12;
 
-
+/*---------------------------------------------------------------------------------------*/
+// Fonction utilisée pour s'affranchir de la taille d'écran pour l'affichage.
+/*---------------------------------------------------------------------------------------*/
+function definir_reperes(windowWidth, windowHeight) {
 // Paramètres d'affichage de l'interface, windowWidth = 1920 et windowHeight = 1080 ici
 // windowWidth et windowHeight n'existent que dans draw, il faut donc définir les paramètres
 // d'affichage dans draw via cette fonction.
-function definir_reperes(windowWidth, windowHeight) {
   var xsep = Math.floor(3 * windowWidth / 4);
   var ysep = Math.floor(3 * windowHeight / 4);
 
@@ -44,16 +55,55 @@ function definir_reperes(windowWidth, windowHeight) {
   return {'xsep':xsep, 'ysep':ysep, 'y1':y1, 'y2':y2};
 }
 
+/*---------------------------------------------------------------------------------------*/
+// Fonctions permettant de passer de l'ancien affichage de la carte au nouveau par rescaling
+/*---------------------------------------------------------------------------------------*/
+
+/*
+Dans la première version de la démo, tous les paramétrages ont été définis à la main et en
+utilisant des valeurs numériques absolues. Pour modifier l'interface d'affichage, on a appliqué
+une homothétie à l'image de fond ainsi qu'aux dessins de la carte (l'homothétie du fond n'est pas
+la même que celle des dessins car les échelles de ces deux éléments n'étaient pas les mêmes (!) sur
+la version initiale). On est parti de (le fond de la carte couvre toute l'image mais il est partiellement
+caché; le dessin de la carte est partiellement caché mais ne couvre pas toute l'image):
+
+    485px
+<=========>
+ _______________________________________________________________________________________       /\ 
+|         |                                                                             |      || 
+|         |                                                                             |      || 
+|         |                                                                             |      || 
+|         |                                                                             |      || 
+|         |                                                                             |      || 
+|         |                                                                             | 900px|| 
+|         |                                    CARTE VISIBLE                            |      || 
+|         |                                                                             |      || 
+|         |                                                                             |      || 
+|         |                                                                             |      || 
+|         |                                                                             |      || 
+|         |                                                                             |      || 
+|         |_____________________________________________________________________________|      \/ 
+|                                                                                       |       
+|                                              CACHE                                    |       
+|                                                                                       |       
+|_______________________________________________________________________________________|       
+
+*/
+
 function resc_x(x) {
+  // Homothétie selon l'axe des x
   return Math.floor((x - 485) * (xsep / (windowWidth - 485)));
 }
 
 function resc_y(y) {
+  // Homothétie selon l'axe des y
   return Math.floor(y * (ysep / 900));
 }
 
 function image_rescalee(img, windowWidth, windowHeight, x, y, L, H, offset=true) {
-  var cste_recalage = offset ? -70 : 0;  // pour une raison qui m'échappe rescaler l'image globale ne suffit pas: on la décale vers le hau
+  // Homothétie appliquée aux images. On applique une translation supplémentzire à la plupart d'entre elles car expérimentalement
+  // le rescaling qui a été calculé ne fonctionne pas totalement.
+  var cste_recalage = offset ? -70 : 0;  // pour une raison qui m'échappe rescaler l'image globale ne suffit pas: on la décale vers le haut
   var nv_x = resc_x(x);
   var nv_y = resc_y(y) + cste_recalage;
   var nv_L = Math.floor(L * (xsep / (windowWidth - 485)));
@@ -61,8 +111,39 @@ function image_rescalee(img, windowWidth, windowHeight, x, y, L, H, offset=true)
   image(img, nv_x, nv_y, nv_L, nv_H);
 }
 
-// Fonctions utilisées pour le traçage des différents éléments
+/*---------------------------------------------------------------------------------------*/
+// Fonctions de traçage auxiliaires utilisées pour réaliser l'interface graphique
+/*---------------------------------------------------------------------------------------*/
+
+/*
+
+                                                                                xsep
+    |---------------------------------------------------------------------------------------------> x
+    |    _______________________________________________________________________________________ 
+    |   |                                                                       |               |
+    |   |                                                                       |               | 
+    |   |                                                                       |   CACHE       |
+    |   |                                                                       | -> PROFIL 1   | 
+  y1|   |                                                                       |_______________|
+    |   |                                                                       |               | 
+    |   |                               CARTE VISIBLE                           |               | 
+    |   |                                                                       |   CACHE       |
+    |   |                                                                       | -> PROFIL 2   | 
+    |   |                                                                       |               |
+  y2|   |                                                                       |_______________|
+    |   |                                                                       |               | 
+ysep|   |_______________________________________________________________________|               |
+    |   |                                                                       |   CACHE       |       
+    |   |                                                                       | -> PROFIL 3   |       
+    |   |                      CACHE -> HISTOGRAMME + HORLOGE                   |               |       
+    V   |_______________________________________________________________________|_______________|
+    y      
+
+*/
+
 function tracer_carte(windowWidth, windowHeight) {
+  // Tracé de la carte (configurée pour que la partie visible soit la même que pour
+  // l'interface d'origine).
   image_rescalee(img, windowWidth, windowHeight, 0, 0, windowWidth, strokeWeight);
   //Autoroute
     //droite
@@ -380,6 +461,7 @@ function tracer_carte(windowWidth, windowHeight) {
 }
 
 function tracer_bordures(windowWidth, windowHeight) {
+  // Tracé du cache (cache de l'histogramme, caches des profils)
   fill(30);
   stroke(0);
   strokeWeight(2);
@@ -390,6 +472,7 @@ function tracer_bordures(windowWidth, windowHeight) {
 }
 
 function tracer_histogramme(windowWidth, windowHeight) {
+  // Tracé de l'histogramme (s'actualise quand la variable histogram change)
   var lar = Math.floor(xsep / 25);
   var complementaire = xsep % 25;
   var nb_barres = histogram.length;
@@ -416,12 +499,13 @@ function tracer_histogramme(windowWidth, windowHeight) {
       textAlign(CENTER, BOTTOM)
       fill(255);
       strokeWeight(2);
-      text(time[i], i*lar + lar/2, windowHeight - 3);
+      text(horaires[i], i*lar + lar/2, windowHeight - 3);
     };
     };
 }
 
 function tracer_horloge(windowWidth, windowHeight) {
+  // Tracé de l'horloge mobile
   var lar = Math.floor(xsep / 25);
   var x_horloge = lar * slider.value() + lar / 2 - 25;
   var y_ligne = ysep + 30;
@@ -440,6 +524,7 @@ function tracer_horloge(windowWidth, windowHeight) {
 };
 
 function echelle_couleur(temps_trajet, temps_trajet_min, temps_trajets_max) {
+  // Fonction auxiliaire pour l'échelle de couleurs des profils
   var valeur_perdue = (temps_trajet - temps_trajet_min) / (temps_trajets_max - temps_trajet_min);
   var r = 255 * valeur_perdue;
   var g = 255 * (1 - valeur_perdue);
@@ -448,6 +533,8 @@ function echelle_couleur(temps_trajet, temps_trajet_min, temps_trajets_max) {
 }
 
 function tracer_profils(windowWidth, windowHeight) {
+  // Tracé des profils (nom + indicateur de couleur en fonction du tps de trajet + tps de trajet).
+  // S'actualise lorsque la variable trajet change.
   var noms = ['Lucie', 'Alphonse', 'Gaby'];
   var couleurs = trajet.map((temps, i) => echelle_couleur(temps, temps_trajets_a_vide[i], temps_trajets_max[i]));
   var x_nom = xsep + (windowWidth - xsep) / 2;
@@ -461,13 +548,13 @@ function tracer_profils(windowWidth, windowHeight) {
     y_icone = i * y1 + (y1 / 2) - 125;
     y_temps = (i + 1) * y1 - 50;
 
+    colorMode(RGB, 255);
     textFont(MontserratBold);
     textSize(45);
     textAlign(CENTER, CENTER);
     fill(255);
     strokeWeight(2);
     text(noms[i], x_nom, y_nom);
-
     try {tint.apply(this, couleurs[i])} catch(err) {'erreur couleurs encore indéfinies'};
     image(voiture, x_icone, y_icone, 250, 250);
 
@@ -478,6 +565,8 @@ function tracer_profils(windowWidth, windowHeight) {
 };
 
 function tracer_flashlights(windowWidth, windowHeight) {
+  // Tracé d'ellipses mobiles figurant le mouvement des voitures jusqu'à l'entreprise.
+  // A faire: le nombre et la vitesse des ellipses doivent dépendre du trafic.
     noStroke();
     colorMode(RGB, 255);
     ellipseMode(CENTER);
@@ -574,15 +663,42 @@ function tracer_flashlights(windowWidth, windowHeight) {
   }
 }
 
+// Fonctions auxiliaires nécessaires au traçage
+function updateColor(_histogram, index) {
+  // Mise à jour de la couleur de la route sur la carte
+  histogram = _histogram;
+  congestion = histogram[index];
+  congestionAnticipationIndex = index + 5;
 
-// Fonctions d'initialisation du tracé
+  if (congestionAnticipationIndex > histogram.length) {
+    congestionAnticipationIndex = congestionAnticipationIndex - histogram.length;
+  }
+
+  flashlightsDensity = int(map(histogram[congestionAnticipationIndex], 1, 13, 2000, 50));
+}
+
+
+function updateTrajet(_trajet, index) {
+  // Mise à jour des temps de trajet
+  trajet = _trajet;
+  heure = trajet[index];
+}
+
+/*---------------------------------------------------------------------------------------*/
+// Fonctions utilisées par p5.js pour réaliser la visualisation
+/*---------------------------------------------------------------------------------------*/
+
 function preload() {
+  // Fonction qui est appelée avant le traçage. On l'utilise pour importer la
+  // police de caractères à utiliser.
   Montserrat = loadFont('/assets-visu/assets/Montserrat-Regular.ttf');
   MontserratBold = loadFont('/assets-visu/assets/Montserrat-Bold.ttf');
 }
 
 
-function setup() {  // revoir la partie slider
+function setup() {
+  // Fonction qui permet de charger les ressources nécessaires au tracé (images, ...)
+  // On s'en sert également pour générer les objets non-tracés à utiliser.
   createCanvas(windowWidth, windowHeight);
   img = loadImage("/assets-visu/assets/bg.png");
   tree = loadImage("/assets-visu/assets/arbre.png");
@@ -597,30 +713,10 @@ function setup() {  // revoir la partie slider
   slider.hide();
 }
 
-
-// Fonctions nécessaires au traçage
-function updateColor(_histogram, index) {
-  histogram = _histogram;
-  congestion = histogram[index];
-  congestionAnticipationIndex = index + 5;
-
-  if (congestionAnticipationIndex > histogram.length) {
-    congestionAnticipationIndex = congestionAnticipationIndex - histogram.length;
-  }
-
-  flashlightsDensity = int(map(histogram[congestionAnticipationIndex], 1, 13, 2000, 50));
-}
-
-
-function updateTrajet(_trajet, index) {
-  trajet = _trajet;
-  heure = trajet[index];
-}
-
-// Routine utilisée pour le tracé en temps réel de la démo
-
 function draw() {
-
+  // Fonction appelée automatiquement toutes les 1/30 secondes par p5.js,
+  // et qui trace à chaque fois une image. C'est notre "programme principal" 
+  // de visualisation
   background(255);
   colorMode(RGB, 360);
 
@@ -637,28 +733,33 @@ function draw() {
 
   tracer_carte(windowWidth, windowHeight);
   tracer_bordures(windowWidth, windowHeight);
-  tracer_profils(windowWidth, windowHeight);
-  tracer_horloge(windowWidth, windowHeight);
   tracer_histogramme(windowWidth, windowHeight);
+  tracer_horloge(windowWidth, windowHeight);
+  tracer_profils(windowWidth, windowHeight);
   tracer_flashlights(windowWidth, windowHeight);
 }
 
 
+/*---------------------------------------------------------------------------------------*/
+// Fonctions supplémentaires pour l'affichage des "voitures" sur la route de l'entreprise
+/*---------------------------------------------------------------------------------------*/
+
 var sliderCurrentIndex = 0;
 
 window.onload = function() {
+  // Fonction qui gère le cycle de vie d'une "voiture"
   setInterval(function() {
     sliderCurrentIndex++;
     if(sliderCurrentIndex == 25) {sliderCurrentIndex = 0}
-    document.getElementsByTagName('input')[0].value = sliderCurrentIndex;
+      document.getElementsByTagName('input')[0].value = sliderCurrentIndex;
   },2500);
   createLight();
 };
 
 
 function createLight() {
+  // Fonction qui crée une "voiture" sur la route de l'entreprise.
   flashlights.unshift(-1);
-
   setTimeout(function(){
     createLight();
   }, flashlightsDensity);

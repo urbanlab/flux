@@ -16,10 +16,13 @@ const fs  = require('fs');                              // Chargement de fichier
 /*---------------------------------------------------------------------------------------*/
 
 var clients = {};                                       // liste de clients
-var profils = JSON.parse(fs.readFileSync('./ressources/profils', {encoding: 'utf-8'})); // on va chercher le profil complet des utilisateurs. Il sera actualisé au cours de la démo.
+var profils = JSON.parse(fs.readFileSync('./ressources/profils.json', {encoding: 'utf-8'})); // on va chercher le profil complet des utilisateurs. Il sera actualisé au cours de la démo.
 var sockets_mobile = {};                                // liste de sockets associés à chaque client
 var socket_visu;                                        // socket de l'interface visuelle (défini plus bas)
-var algo;                                               // 
+var algo;                                               // objet qui effectue les calculs d'optimisation et renvoie les histogrammes
+
+var horaires = backend.horaires;
+var horaires_eligibles = backend.horaires_eligibles;
 
 // On rend le serveur capable de charger des ressources statiques (images, ...) selon les
 // différentes pages de l'application à afficher
@@ -82,8 +85,9 @@ mobile.on('connection', function(socket) {
     socket.on('client', function (id) {
     // L'information fait un aller-retour dans le socket lors de la connection. Considérer ceci comme une action à la connexion.
         clientId = id;
-        sockets_mobile[clientId] = socket; // référencement du socket créé lors de l'initialisation dans le dictionnaire des sockets.
+        sockets_mobile[clientId] = socket;   // référencement du socket créé lors de l'initialisation dans le dictionnaire des sockets.
     	socket.emit('profils', profils[id]); // initialisation de l'affichage des informations par la tablette: à partir de leur ID on transmet aux clients leur profil complet
+    	socket.emit('dates_eligibles', horaires_eligibles);
     });
 
     socket.on('start', function(heure_min) {
