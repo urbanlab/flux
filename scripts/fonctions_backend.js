@@ -43,15 +43,17 @@ function horaire_en_minutes(horaire) {
 };
 
 function minutes_en_horaire(minutes) {
-	// Traduit une valeur en minutes(int) en un horaire (format 'hh:mm')
-	var horaire = [Math.floor(minutes / 60), minutes % 60];
+	// Traduit une valeur en minutes(int) en un horaire (format 'hh:mm').
+	var signe = minutes >= 0 ? '' : '-';
+	var tps = Math.abs(minutes);
+	var horaire = [Math.floor(tps / 60), tps % 60];
 	var string_heures = (horaire[0] >= 10) ? String(horaire[0]) : '0' + String(horaire[0]);
 	var string_minutes = (horaire[1] >= 10) ? String(horaire[1]) : '0' + String(horaire[1]);
-	return string_heures + ':' + string_minutes;
+	return signe + string_heures + ':' + string_minutes;
 };
 
 function ajouter_horaires(h1, h2, signe) {
-	// Calcule h1 + h2, ou h1 - h2 si signe = '-'. Les entrées et la sortie sont au format 'hh:mm'.
+	// Calcule h1 + h2, ou h1 - h2 si signe = '-'. Les entrées et la sortie sont au format 'hh:mm'. Les horaires sont non-signés, h2<h1
 	var h1_minutes = horaire_en_minutes(h1);
 	var h2_minutes = horaire_en_minutes(h2);
 	var resultat_minutes = (signe == '-') ? (h1_minutes - h2_minutes) : (h1_minutes + h2_minutes);
@@ -215,9 +217,12 @@ function optimiser(groupe_a_optimiser, intervalle_disponibilite, dates_groupes, 
 	// d'un groupe donné du point de vue du collectif, dans un intervalle de temps fourni par l'utilisateur. On procède
 	// pour cela à une recherche systématique du minimum de la fonction de coût sur cet intervalle.
 	var fonction_cout_partielle = function(date_groupe) {
+		var decalage_groupe = ajouter_horaires(date_groupe, dates_groupes[groupe_a_optimiser], '-');
+		var cout_decalage_groupe = 0.01 * Math.abs(horaire_en_minutes(decalage_groupe));
 		var dates_groupes_modif = dates_groupes.slice();
 		dates_groupes_modif[groupe_a_optimiser] = date_groupe;
-		return calculer_fonction_cout(liste_dates, dates_groupes_modif, tailles_groupes, distribution_probabilites);
+		var cout_tps_trajet = calculer_fonction_cout(liste_dates, dates_groupes_modif, tailles_groupes, distribution_probabilites);
+		return cout_tps_trajet + cout_decalage_groupe;
 	};
 
 	var dates_possibles = liste_dates.filter((date) =>
