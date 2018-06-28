@@ -277,6 +277,19 @@ function calculer_durees_trajets(horaires, histogramme, dates_groupes, tailles_g
 	return durees_trajets;
 };
 
+function calculer_credits_gagnes(horaires, histogramme, dates_groupes, tailles_groupes,
+								 durees_base_trajets, distribution_probabilites) {
+	// Fonction qui calcule le nombre de crédits gagné par chacun pour le système de nudge.
+	// En l'état on considère que le nombre de crédits gagnés par une personne est une fonction
+	// décroissante de la congestion du trafic au moment où elle se déplace, donc une fonction décroissante
+	// (arbitraire) de son temps de trajet. Ce sera modifié par la suite.
+	var seuil_debut_pertes = 0.8;
+	var facteur_multiplicatif = 15;
+	var tps_trajets = calculer_durees_trajets(horaires, histogramme, dates_groupes, tailles_groupes, durees_base_trajets, distribution_probabilites);
+	var tps_normalises = tps_trajets.map((tps, indice) => (tps - durees_base_trajets[indice]) / durees_base_trajets[indice]);
+	var credits_gagnes = tps_normalises.map((tps) => - Math.round(facteur_multiplicatif * (tps - seuil_debut_pertes)));
+	return credits_gagnes;
+};	
 
 /*---------------------------------------------------------------------------------------*/
 //Données à exporter
@@ -329,6 +342,10 @@ function Algorithme(profils) {
 		var durees_trajets = calculer_durees_trajets(horaires, histogramme, this.dates_trajets, this.tailles_groupes,
 								 					 this.durees_base_trajets, distribution_probas);
 
+		var credits_gagnes = calculer_credits_gagnes(horaires, histogramme, this.dates_trajets, this.tailles_groupes,
+								 					 this.durees_base_trajets, distribution_probas);
+
+
 		var dictionnaire_trajets = {};
 		this.UserIDs.forEach((val, indice) => dictionnaire_trajets[val] = durees_trajets[indice]);
 
@@ -336,6 +353,7 @@ function Algorithme(profils) {
 		sockets_mobile[client_actif].broadcast.emit('date_depart', {'actif':client_actif, 'nv_date':this.dates_trajets[indice_actif]});
 		sockets_mobile[client_actif].emit('durees', {'actif':client_actif, 'nv_durees':dictionnaire_trajets});
 		sockets_mobile[client_actif].broadcast.emit('durees', {'actif':client_actif, 'nv_durees':dictionnaire_trajets});
+		sockets_mobile[client_actif].emit('credits', credits_gagnes[indice_actif]);
 
 		socket_visu.emit('histogramme', histogramme_affichage);
 		socket_visu.emit('durees', durees_trajets);

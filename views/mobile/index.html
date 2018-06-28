@@ -30,11 +30,15 @@
 
        <div class="trajetdebut">
          <img class="maison" src="assets/images/maison.png">
-         <span id="from">
+         <span id="from"></span>
        </div>
        <div class="trajetfin">
          <img class="entreprise" src="assets/images/entreprise.png">
          <span class="vers"> 2 rue des Érables, 69760 Limonest</span>
+       </div>
+       <div class="credits">
+         <img class="argent" src="assets/images/credit.png">
+         <span class="montant"> <span class=montant_accu></span> crédits <span class=montant_ajout></span> </span>
        </div>
 
        <div class="calendarpicto">
@@ -63,7 +67,8 @@
         <div class="bulle" id="suggestion" style="display: none">
             <div class="element">
                 <h1> Votre trajet va durer <span id="timeMove"></span> minutes. </br>
-                Je vous propose d'arriver à <span id="suggestedTime"></span> pour fluidifer le trafic. </h1>
+                Je vous propose d'arriver à <span id="suggestedTime"></span> pour fluidifer le trafic.</br>
+                <span id='gain_de_credits'></span> </h1>
             </div>
         </div>
 
@@ -111,11 +116,12 @@
         if(data) {                                                  // par le serveur en réponse à la requête 'client'.
           $(".userName").html(data.name);
           $("#from").html(data.from);
+          $(".montant_accu").html(data.credits);
         };
       });
 
-      socket.on('dates_eligibles', function(dates) {                // intègre la liste des dates d'arrivées que l'utilisateur peut entrer dans les
-        dates_eligibles = dates;                                    // champs "heure d'arrivée min" et "heure d'arrivée max"
+      socket.on('dates_eligibles', function(data) {                // intègre la liste des dates d'arrivées que l'utilisateur peut entrer dans les
+        dates_eligibles = data;                                    // champs "heure d'arrivée min" et "heure d'arrivée max"
         dates_eligibles.forEach(function(date) {
           $('.timebis').append("<option value='" + date + "'>" + date + "</option>");
         });
@@ -144,6 +150,19 @@
         $("#timeMove").html(data.nv_durees[profileId]);
         $("#timeMove").show();
       });
+
+      socket.on('credits', function(data) {
+      	var signe = (data < 0) ? '' : '+';
+      	$(".montant_ajout").html(signe + String(data));
+      	var texte_credits;
+      	if(data < 0) {
+      		texte_credits = "Attention, vous allez perdre " + Math.abs(data) + " crédits :(";
+      	} else{
+      		texte_credits = "Vous allez gagner " + data + " crédits ;)";
+      	};
+      	$("#gain_de_credits").html(texte_credits);
+      });
+
 
       // On rend le calendrier consultable
       $(function() {

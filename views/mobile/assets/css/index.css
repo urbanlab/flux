@@ -96,7 +96,7 @@ h6 {
 
 .trajetfin {
 	display: flex;
-	margin: 0px 0px 20px 0px;
+	margin: 0px 0px 0px 0px;
 }
 
 .entreprise {
@@ -113,6 +113,24 @@ h6 {
 	color: #00c6c1;
 }
 
+.credits {
+	display: flex;
+	margin: 0px 0px 20px 0px;
+}
+
+.argent {
+	width: 40px;
+	height: 40px;
+	margin: 0px 0px 20px 80px;
+}
+
+.montant {
+	font-family: "Montserrat";
+	font-weight: 700;
+	font-size: 30px;
+	margin: 0px 80px 20px 40px;
+	color: #00c6c1;
+}
 
 /* Partie calendrier */
 

@@ -5,7 +5,8 @@
       "name": "Lucie",
       "count": "200",
       "start": "08:30",
-      "end": "08:30"
+      "end": "08:30",
+      "credits": "120"
     },
 
    "villeurbanne": {
@@ -14,7 +15,8 @@
       "name": "Alphonse",
       "count": "500",
       "start": "08:30",
-      "end": "08:30"
+      "end": "08:30",
+      "credits": "58"
    },
 
    "tassin": {
@@ -23,6 +25,7 @@
       "name": "Gaby",
       "count": "400",
       "start": "08:30",
-      "end": "08:30"
+      "end": "08:30",
+      "credits": "22"
    }
 }
