@@ -100,10 +100,10 @@ function resc_y(y) {
   return Math.floor(y * (ysep / 900));
 }
 
-function image_rescalee(img, windowWidth, windowHeight, x, y, L, H, offset=true) {
+function image_rescalee(img, windowWidth, windowHeight, x, y, L, H, offset=false) {
   // Homothétie appliquée aux images. On applique une translation supplémentzire à la plupart d'entre elles car expérimentalement
   // le rescaling qui a été calculé ne fonctionne pas totalement.
-  var cste_recalage = offset ? -70 : 0;  // pour une raison qui m'échappe rescaler l'image globale ne suffit pas: on la décale vers le haut
+  var cste_recalage = offset ? -85 : 0;  // pour une raison qui m'échappe rescaler l'image globale ne suffit pas: on la décale vers le haut
   var nv_x = resc_x(x);
   var nv_y = resc_y(y) + cste_recalage;
   var nv_L = Math.floor(L * (xsep / (windowWidth - 485)));
@@ -445,8 +445,8 @@ function tracer_carte(windowWidth, windowHeight) {
   image_rescalee(autoroute, windowWidth, windowHeight, 510, 300, windowWidth/24, windowHeight/24);
 
   if (xt > 1570){xt = xt - 10} else {xt = 2200};
-  image_rescalee(tram, windowWidth, windowHeight, xt, 870, 100, 50);
-  image_rescalee(tunnel, windowWidth, windowHeight, 1565, 870, 60, 60);
+  image_rescalee(tram, windowWidth, windowHeight, xt, 870, 100, 50, true);
+  image_rescalee(tunnel, windowWidth, windowHeight, 1565, 870, 60, 60, true);
 
   noFill();
   stroke(165);
