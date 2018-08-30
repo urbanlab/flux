@@ -283,7 +283,7 @@ function calculer_credits_gagnes(horaires, histogramme, dates_groupes, tailles_g
 	// En l'état on considère que le nombre de crédits gagnés par une personne est une fonction
 	// décroissante de la congestion du trafic au moment où elle se déplace, donc une fonction décroissante
 	// (arbitraire) de son temps de trajet. Ce sera modifié par la suite.
-	var seuil_debut_pertes = 0.8;
+	var seuil_debut_pertes = 0.7;
 	var facteur_multiplicatif = 15;
 	var tps_trajets = calculer_durees_trajets(horaires, histogramme, dates_groupes, tailles_groupes, durees_base_trajets, distribution_probabilites);
 	var tps_normalises = tps_trajets.map((tps, indice) => (tps - durees_base_trajets[indice]) / durees_base_trajets[indice]);
