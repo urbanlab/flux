@@ -49,9 +49,9 @@ app.get('/visu/', function(req, res) {
     res.sendFile(__dirname + '/views/visu/index.html');
 });
 
-// On instancie le serveur et on écoute le port 3000.
-server.listen(3000, function() {
-    console.log('FLUX Server started on port 3000');
+// On instancie le serveur et on écoute le port 8000.
+server.listen(8000, function() {
+    console.log('FLUX Server started on port 8000');
 });
 
 /*---------------------------------------------------------------------------------------*/
