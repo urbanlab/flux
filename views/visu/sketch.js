@@ -32,7 +32,7 @@ var flashlightsFramesCountMax = 2;
 var flashlightsFramesCount = 0;
 var flashlightsSlowFramesCountMax = 1;
 var flashlightsSlowFramesCount = 0;
-var flashlightsSlowIndex = 43;
+var flashlightsSlowIndex = 43; 
 
 // Affichage du tramway (position de départ, hors-champ). Ancien système de coordonnées.
 var xt = 2000;
@@ -675,7 +675,8 @@ function updateColor(_histogram, index) {
     congestionAnticipationIndex = congestionAnticipationIndex - histogram.length;
   }
 
-  flashlightsDensity = int(map(histogram[congestionAnticipationIndex], 1, 13, 2000, 50));
+  flashlightsDensity = int(map(histogram[Math.min(index+1,histogram.length)], 1, 13, 2000, 50));
+  flashlightsSlowIndex = Math.max(43,20*histogram[Math.min(index+1,histogram.length)]);
 }
 
 
