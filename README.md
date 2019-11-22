@@ -28,6 +28,7 @@ Il s'agit d'une application Web réalisée avec un serveur NodeJS et deux pages 
 1) Ouvrir une console et entrer:
 ```
 git clone https://github.com/urbanlab/flux.git
+npm install --save probability-distributions
 cd flux
 chmod +x launch/start.sh
 ```
