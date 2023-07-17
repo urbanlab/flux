@@ -24,6 +24,11 @@ Il s'agit d'une application Web réalisée avec un serveur NodeJS et deux pages 
 
 **/!\\Attention:** Cette démo a été réalisée sous Linux (Ubuntu 16.04) et avec Google Chrome, son support n'est pas garanti sous d'autres OS et elle ne fonctionne pas sous d'autres navigateurs !
 
+
+### Utilisation sous docker
+
+`docker-compose up`
+
 ### Téléchargement et préparation
 1) Ouvrir une console et entrer:
 ```
