@@ -2,6 +2,7 @@ version: '3.9'
 services:
   flux:
     build: .
+    image: erasme/flux:latest
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - $HOME/.Xauthority:/home/lyonn/.Xauthority
