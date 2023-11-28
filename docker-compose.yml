@@ -3,10 +3,5 @@ services:
   flux:
     build: .
     image: erasme/flux:latest
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix
-      - $HOME/.Xauthority:/home/lyonn/.Xauthority
-    environment:
-      - DISPLAY=$DISPLAY
-      - HOSTNAME=$HOSTNAME
+    restart: always
     network_mode: host
